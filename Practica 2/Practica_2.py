@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def step_function(x):
     if x < 0:
@@ -21,13 +22,17 @@ def perceptron_simple(dataset, w):
             E = expected - step_function(result)
             w += coeficiente_aprendizaje * E * x
             error += np.power(E, 2)
+            
+            # Plot separating hyperplane
+            p = (-w[1],w[0]); m = p[0] / p[1]; b = w[2]
+            xx = np.linspace(-1,2,100); y = [b + m * i for i in xx]
+            plt.plot(xx, y, 'r--', [0,0,1,1],[0,1,0,1], 'bs')
         epoca += 1
         errors.append(error)
-
     for x, _ in dataset:
         result = np.dot(x, w)
         print("{}: {} -> {}".format(x[:2], result, step_function(result)))
-
+    return
 
 # APRENDER FUNCION OR
 dataset = [
