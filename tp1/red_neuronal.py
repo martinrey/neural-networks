@@ -50,13 +50,17 @@ class PerceptronMulticapa(object):
                                self.capa_numero(indice_capa + 1).cantidad_neuronas())
             )
 
-    def _forward_propagation(self):
+    def _forward_propagation(self, input):
+        self.capa_numero(0).set_valores(input)
         for indice_capa in range(self.cantidad_de_capas() - 1):
             self.capa_numero(indice_capa + 1).set_valores(np.dot(self.capa_numero(indice_capa).evaluar(), self.matriz_de_pesos_numero(indice_capa)))
+        return self.capa_numero(self.cantidad_de_capas() - 1).valores()
 
-    def _back_propagation(self, clasificacion):
+    def _back_propagation(self, clasificacion, resultado_forwardeo):
         pass
 
-    def entrenar(self, clasificacion):
-        self._forward_propagation()
-        self._back_propagation(clasificacion)
+    def entrenar(self, inputs, clasificaciones):
+        # TODO: ver si hacerlo como batch, mini-batch, etc
+        for input, clasificacion in zip(inputs, clasificaciones):
+            resultado_forwardeo = self._forward_propagation(input)
+            self._back_propagation(clasificacion, resultado_forwardeo)
