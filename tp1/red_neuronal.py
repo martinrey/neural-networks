@@ -54,9 +54,9 @@ class PerceptronMulticapa(object):
         for indice_capa in range(self.cantidad_de_capas() - 1):
             self.capa_numero(indice_capa + 1).set_valores(np.dot(self.capa_numero(indice_capa).evaluar(), self.matriz_de_pesos_numero(indice_capa)))
 
-    def _back_propagation(self):
+    def _back_propagation(self, clasificacion):
         pass
 
-    def entrenar(self):
+    def entrenar(self, clasificacion):
         self._forward_propagation()
-        self._back_propagation()
+        self._back_propagation(clasificacion)
