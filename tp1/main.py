@@ -2,11 +2,22 @@ import numpy as np
 
 def funcionActivacion( array ):
 	#TODO: recorro los valores del array y los seteo en 1 o -1
-	return array
+	#ver pag 136 simon o. hakin
+	vfunc = np.vectorize(logFunc)
+	return vfunc(array)
+
+
+cteLog = 1
+def logFunc( x ):
+	return 1/ (1.0 + np.exp(cteLog * x)) 
+
+def derivadaLogFunc( x ):
+	return cteLog*logFunc(x)*(1- logFunc(x))
 
 def derivadaFuncionActivacion( array ):
 	#TODO: derivar y devolver valor, bla bla
-	return array
+	vfunc = np.vectorize(derivadaLogFunc)
+	return vfunc(array)
 
 if __name__ == "__main__":
 	#Valores para ejemplo
