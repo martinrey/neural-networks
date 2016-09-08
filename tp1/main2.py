@@ -7,13 +7,15 @@ if __name__ == "__main__":
     identidad = Identidad()
     sigmoidea = SigmoideaLogistica(cte=1)
 
-    capa_1 = Capa(cantidad_neuronas=10, funcion_activacion=identidad)
-    capa_2 = Capa(cantidad_neuronas=15, funcion_activacion=sigmoidea)
-    capa_3 = Capa(cantidad_neuronas=15, funcion_activacion=sigmoidea)
-    capa_4 = Capa(cantidad_neuronas=15, funcion_activacion=sigmoidea)
-    capa_5 = Capa(cantidad_neuronas=1, funcion_activacion=sigmoidea)
+    capa_1 = Capa(cantidad_neuronas=10, funcion_activacion=identidad,hidden=1)
+    print capa_1.cantidad_neuronas()
+    capa_2 = Capa(cantidad_neuronas=15, funcion_activacion=sigmoidea,hidden=1)
+    capa_3 = Capa(cantidad_neuronas=19, funcion_activacion=sigmoidea,hidden=1)
+    capa_4 = Capa(cantidad_neuronas=22, funcion_activacion=sigmoidea,hidden=1)
+    capa_5 = Capa(cantidad_neuronas=1, funcion_activacion=sigmoidea,hidden=0)
 
     capas = [capa_1, capa_2, capa_3, capa_4, capa_5]
+    #capas = [capa_1,capa_5]
 
     perceptron_multicapa = PerceptronMulticapa(capas)
     perceptron_multicapa.inicializar_pesos()

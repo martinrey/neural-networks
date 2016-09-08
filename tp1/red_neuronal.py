@@ -3,16 +3,16 @@ import numpy as np
 
 # Clase concreta
 class Capa(object):
-    def __init__(self, cantidad_neuronas, funcion_activacion):
-        self._cantidad_neuronas = cantidad_neuronas
+    def __init__(self, cantidad_neuronas, funcion_activacion, hidden):
+        self._cantidad_neuronas = cantidad_neuronas + hidden
         self._funcion_activacion = funcion_activacion
-        self._valores = np.zeros(cantidad_neuronas)
+        self._valores = np.zeros(cantidad_neuronas + hidden)
 
     def cantidad_neuronas(self):
         return self._cantidad_neuronas
 
     def set_valores(self, valores):
-        self._valores = valores
+        self._valores[1:] = valores
 
     def valores(self):
         return self._valores
@@ -44,16 +44,26 @@ class PerceptronMulticapa(object):
         return self._matrices[numero_matriz]
 
     def inicializar_pesos(self):
-        for indice_capa in range(self.cantidad_de_capas() - 1):
+        for indice_capa in range(0,self.cantidad_de_capas() - 2):
+            n1 = self.capa_numero(indice_capa).cantidad_neuronas()
+            n2 = self.capa_numero(indice_capa + 1).cantidad_neuronas() - 1
             self._matrices.append(
-                np.random.rand(self.capa_numero(indice_capa).cantidad_neuronas(),
-                               self.capa_numero(indice_capa + 1).cantidad_neuronas())
+                np.random.random( (n1, n2) )
             )
+            #print n1, n2
+        n1 = self.capa_numero(self.cantidad_de_capas()-2).cantidad_neuronas()
+        n2 = self.capa_numero(self.cantidad_de_capas()-1).cantidad_neuronas()
+        self._matrices.append( np.random.random ((n1, n2)) )
+        #print n1, n2
 
     def _forward_propagation(self, input):
         self.capa_numero(0).set_valores(input)
-        for indice_capa in range(self.cantidad_de_capas() - 1):
-            self.capa_numero(indice_capa + 1).set_valores(np.dot(self.capa_numero(indice_capa).evaluar(), self.matriz_de_pesos_numero(indice_capa)))
+        for indice_capa in range(self.cantidad_de_capas() - 2):
+            #print self.capa_numero(indice_capa).cantidad_neuronas()
+            #print self.matriz_de_pesos_numero(indice_capa).shape
+            #print self.capa_numero(indice_capa+1).cantidad_neuronas()
+            np_dot = np.dot(self.capa_numero(indice_capa).evaluar(),self.matriz_de_pesos_numero(indice_capa))
+            self.capa_numero(indice_capa + 1).set_valores(np_dot)
         return self.capa_numero(self.cantidad_de_capas() - 1).valores()
 
     def _back_propagation(self, clasificacion, resultado_forwardeo):
