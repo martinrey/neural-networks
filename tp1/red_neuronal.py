@@ -37,7 +37,7 @@ class CapaSalida(Capa):
         self._valores = np.zeros(cantidad_neuronas)
 
     def set_valores(self, valores):
-        self._valores[1:] = valores
+        self._valores = valores
 
     def valores(self):
         return self._valores
@@ -64,16 +64,15 @@ class PerceptronMulticapa(object):
     def inicializar_pesos(self):
         for indice_capa in range(self.cantidad_de_capas() - 1):
             self._matrices.append(
-                #np.random.rand(self.capa_numero(indice_capa).cantidad_neuronas() + 1,
-                #               self.capa_numero(indice_capa + 1).cantidad_neuronas())
-                np.ones((self.capa_numero(indice_capa).cantidad_neuronas() + 1,
-                               self.capa_numero(indice_capa + 1).cantidad_neuronas()))
+                np.random.rand(self.capa_numero(indice_capa).cantidad_neuronas() + 1,
+                              self.capa_numero(indice_capa + 1).cantidad_neuronas())
             )
 
     def _forward_propagation(self, input):
         self.capa_numero(0).set_valores(input)
-        for indice_capa in range(self.cantidad_de_capas() - 2):
-            np_dot = np.dot(self.capa_numero(indice_capa).evaluar(), self.matriz_de_pesos_numero(indice_capa))
+        for indice_capa in range(self.cantidad_de_capas() - 1):
+            self.capa_numero(indice_capa).evaluar()
+            np_dot = np.dot(self.capa_numero(indice_capa).valores(), self.matriz_de_pesos_numero(indice_capa))
             self.capa_numero(indice_capa + 1).set_valores(np_dot)
         return self.capa_numero(self.cantidad_de_capas() - 1).valores()
 
