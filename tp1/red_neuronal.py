@@ -81,6 +81,8 @@ class PerceptronMulticapa(object):
     def _forward_propagation(self, input):
         self._capas[0] = self.capa_numero(0).set_valores(input).evaluar()
         for indice_capa in range(self.cantidad_de_capas() - 1):
+            print self.matriz_de_pesos_numero(indice_capa)[indice_capa].size
+            print self.matriz_de_pesos_numero(indice_capa).size/self.matriz_de_pesos_numero(indice_capa)[indice_capa].size
             np_dot = np.dot(self.capa_numero(indice_capa).valores(), self.matriz_de_pesos_numero(indice_capa))
             self._capas[indice_capa + 1] = self.capa_numero(indice_capa + 1).set_valores(np_dot).evaluar()
         return self.capa_numero(self.cantidad_de_capas() - 1).valores()
@@ -97,16 +99,19 @@ class PerceptronMulticapa(object):
         for i in range( self.cantidad_de_capas() - 2 ,-1 ,-1):
             derivada_capa_i = self.capa_numero(i).evaluar_en_derivada().valores()
             derivada_capa_i_mas_uno = deltas[-1]
-            print "---Derivada---"
-            print derivada_capa_i_mas_uno
-            print "---Matriz Pesos---"
-            print self.matriz_de_pesos_numero(i)
             #multiplico fila a fila, pero hay problemas con las dimenciones otra vez
             #mismo resultado que con:
             #producto_matriz_y_vector_delta = np.dot( derivada_capa_i_mas_uno, np.transpose(self.matriz_de_pesos_numero(i)))
             #estan mal las dimensiones?
             producto_matriz_y_vector_delta = []
-            cantidad_de_columnas = self.matriz_de_pesos_numero(i).size
+            # print "size vec"
+            # print derivada_capa_i_mas_uno.size
+            # print "---Cols:---"
+            cantidad_de_columnas = self.matriz_de_pesos_numero(i).size/self.matriz_de_pesos_numero(i)[0].size
+            # print cantidad_de_columnas
+            # print "---Fils:---"
+            # print self.matriz_de_pesos_numero(i)[0].size
+            
             for cols in range(cantidad_de_columnas ):
                 sumatoria_col_j = 0
                 cantidad_de_filas = self.matriz_de_pesos_numero(i)[cols].size
