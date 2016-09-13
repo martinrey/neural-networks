@@ -85,7 +85,37 @@ class PerceptronMulticapa(object):
             self._capas[indice_capa + 1] = self.capa_numero(indice_capa + 1).set_valores(np_dot).evaluar()
         return self.capa_numero(self.cantidad_de_capas() - 1).valores()
 
+    #usando el algoritmo pag. 120 del hertz
     def _back_propagation(self, clasificacion, resultado_forwardeo):
+        #Paso 4 (1-3 son forward)
+        derivada_ultima_capa = self.capa_numero(self.cantidad_de_capas() - 1).evaluar_en_derivada().valores()
+        diferencia_respuestas_esperada_obtenida = np.subtract(clasificacion, resultado_forwardeo)
+        delta_ultima_capa = np.multiply(derivada_ultima_capa,diferencia_respuestas_esperada_obtenida)
+        deltas = []
+        deltas.append(delta_ultima_capa)
+        #paso 5
+        for i in range( self.cantidad_de_capas() - 2 ,-1 ,-1):
+            derivada_capa_i = self.capa_numero(i).evaluar_en_derivada().valores()
+            derivada_capa_i_mas_uno = deltas[-1]
+            print "---Derivada---"
+            print derivada_capa_i_mas_uno
+            print "---Matriz Pesos---"
+            print self.matriz_de_pesos_numero(i)
+            #multiplico fila a fila, pero hay problemas con las dimenciones otra vez
+            #mismo resultado que con:
+            #producto_matriz_y_vector_delta = np.dot( derivada_capa_i_mas_uno, np.transpose(self.matriz_de_pesos_numero(i)))
+            #estan mal las dimensiones?
+            producto_matriz_y_vector_delta = []
+            cantidad_de_columnas = self.matriz_de_pesos_numero(i).size
+            for cols in range(cantidad_de_columnas ):
+                sumatoria_col_j = 0
+                cantidad_de_filas = self.matriz_de_pesos_numero(i)[cols].size
+                for fils in range(cantidad_de_filas):
+                    sumatoria_col_j += self.matriz_de_pesos_numero(i)[cols][fils] * derivada_capa_i_mas_uno[fils]
+                producto_matriz_y_vector_delta.append(sumatoria_col_j)
+            delta_capa_i = np.multiply(derivada_capa_i, producto_matriz_y_vector_delta)
+            deltas.append(delta_capa_i)
+        #paso 6
         pass
 
     def entrenar(self, inputs, clasificaciones):
@@ -94,3 +124,5 @@ class PerceptronMulticapa(object):
             resultado_forwardeo = self._forward_propagation(input)
             print resultado_forwardeo
             self._back_propagation(clasificacion, resultado_forwardeo)
+
+
