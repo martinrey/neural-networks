@@ -122,14 +122,17 @@ class PerceptronMulticapa(object):
         #paso 6
         for m in range(self.cantidad_de_capas() - 1):
             filas = deltas[self.cantidad_de_capas() - 1 -m].size
-            columnas = self.capa_numero(m).valores().size
+            columnas = self.capa_numero(m+1).valores().size
             delta_matriz = np.zeros(( filas, columnas))
             for i in range(filas):
                 for k in range(columnas):
-                    delta_matriz[i][k] = coeficiente_aprendisaje * deltas[self.cantidad_de_capas() - 1 -m][i]*self.capa_numero(m).valores()[k]
+                    delta_matriz[i][k] = coeficiente_aprendisaje * deltas[self.cantidad_de_capas() - 1 -m][i]*self.capa_numero(m+1).valores()[k]
             #Problema, no dan las dimenciones
+            print "Cantidad De filas en la matriz delta:"
             print delta_matriz[0].size
+            print "Cantidad De filas en la matriz de pesos:"
             print self.matriz_de_pesos_numero(m)[0].size
+            print "Wtf"
         pass
 
     def entrenar(self, inputs, clasificaciones):
