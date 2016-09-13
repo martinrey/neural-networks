@@ -81,14 +81,13 @@ class PerceptronMulticapa(object):
     def _forward_propagation(self, input):
         self._capas[0] = self.capa_numero(0).set_valores(input).evaluar()
         for indice_capa in range(self.cantidad_de_capas() - 1):
-            print self.matriz_de_pesos_numero(indice_capa)[indice_capa].size
-            print self.matriz_de_pesos_numero(indice_capa).size/self.matriz_de_pesos_numero(indice_capa)[indice_capa].size
             np_dot = np.dot(self.capa_numero(indice_capa).valores(), self.matriz_de_pesos_numero(indice_capa))
             self._capas[indice_capa + 1] = self.capa_numero(indice_capa + 1).set_valores(np_dot).evaluar()
         return self.capa_numero(self.cantidad_de_capas() - 1).valores()
 
     #usando el algoritmo pag. 120 del hertz
     def _back_propagation(self, clasificacion, resultado_forwardeo):
+        coeficiente_aprendisaje = 1
         #Paso 4 (1-3 son forward)
         derivada_ultima_capa = self.capa_numero(self.cantidad_de_capas() - 1).evaluar_en_derivada().valores()
         diferencia_respuestas_esperada_obtenida = np.subtract(clasificacion, resultado_forwardeo)
@@ -121,13 +120,23 @@ class PerceptronMulticapa(object):
             delta_capa_i = np.multiply(derivada_capa_i, producto_matriz_y_vector_delta)
             deltas.append(delta_capa_i)
         #paso 6
+        for m in range(self.cantidad_de_capas() - 1):
+            filas = deltas[self.cantidad_de_capas() - 1 -m].size
+            columnas = self.capa_numero(m).valores().size
+            delta_matriz = np.zeros(( filas, columnas))
+            for i in range(filas):
+                for k in range(columnas):
+                    delta_matriz[i][k] = coeficiente_aprendisaje * deltas[self.cantidad_de_capas() - 1 -m][i]*self.capa_numero(m).valores()[k]
+            #Problema, no dan las dimenciones
+            print delta_matriz[0].size
+            print self.matriz_de_pesos_numero(m)[0].size
         pass
 
     def entrenar(self, inputs, clasificaciones):
         # TODO: ver si hacerlo como batch, mini-batch, etc
         for input, clasificacion in zip(inputs, clasificaciones):
             resultado_forwardeo = self._forward_propagation(input)
-            print resultado_forwardeo
+            #print resultado_forwardeo
             self._back_propagation(clasificacion, resultado_forwardeo)
 
 
