@@ -16,10 +16,14 @@ class SigmoideaLogistica(Funcion):
         self._cte = cte
 
     def evaluar_en(self, punto):
-        return 1.0 / (1.0 + np.exp(self._cte * punto))
+        try:
+            resultado = 1.0 / (1.0 + np.exp(self._cte * punto))
+        except FloatingPointError:
+            resultado = 0
+        return resultado
 
     def derivar_y_evaluar_en(self, punto):
-        return self._cte * self.evaluar_en(punto) * (1 - self.evaluar_en(punto))
+        return self._cte * self.evaluar_en(punto) * (1.0 - self.evaluar_en(punto))
 
 
 # Clase concreta

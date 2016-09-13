@@ -11,6 +11,9 @@ class Capa(object):
     def cantidad_neuronas(self):
         return self._cantidad_neuronas
 
+    def valores(self):
+        return self._valores
+    
     def evaluar_en_derivada(self):
         nueva_capa = self.__class__(self._cantidad_neuronas ,self._funcion_activacion )
         valores = np.zeros(self._cantidad_neuronas)
@@ -27,8 +30,6 @@ class Capa(object):
         nueva_capa.set_valores(valores)
         return nueva_capa
 
-    def valores(self):
-        return self._valores
 
 
 # Clase concreta
@@ -42,6 +43,7 @@ class CapaInterna(Capa):
         return self
 
 
+
 # Clase concreta
 class CapaSalida(Capa):
     def __init__(self, cantidad_neuronas, funcion_activacion):
@@ -51,10 +53,11 @@ class CapaSalida(Capa):
         self._valores = valores
         return self
 
-
 # Clase concreta
 class PerceptronMulticapa(object):
     def __init__(self, capas):
+        #por cuestiones de seguridad al ocurrir un overflow se lanza error
+        np.seterr(over='raise')
         self._capas = capas
         self._matrices = []
 
@@ -74,7 +77,7 @@ class PerceptronMulticapa(object):
         np.random.seed(1)
         for indice_capa in range(self.cantidad_de_capas() - 1):
             self._matrices.append(
-                np.random.rand(self.capa_numero(indice_capa).cantidad_neuronas() + 1,
+                np.random.rand(self.capa_numero(indice_capa).cantidad_neuronas() +1,
                                self.capa_numero(indice_capa + 1).cantidad_neuronas())
             )
 
@@ -101,16 +104,8 @@ class PerceptronMulticapa(object):
             #multiplico fila a fila, pero hay problemas con las dimenciones otra vez
             #mismo resultado que con:
             #producto_matriz_y_vector_delta = np.dot( derivada_capa_i_mas_uno, np.transpose(self.matriz_de_pesos_numero(i)))
-            #estan mal las dimensiones?
             producto_matriz_y_vector_delta = []
-            # print "size vec"
-            # print derivada_capa_i_mas_uno.size
-            # print "---Cols:---"
             cantidad_de_columnas = self.matriz_de_pesos_numero(i).size/self.matriz_de_pesos_numero(i)[0].size
-            # print cantidad_de_columnas
-            # print "---Fils:---"
-            # print self.matriz_de_pesos_numero(i)[0].size
-            
             for cols in range(cantidad_de_columnas ):
                 sumatoria_col_j = 0
                 cantidad_de_filas = self.matriz_de_pesos_numero(i)[cols].size
@@ -122,24 +117,21 @@ class PerceptronMulticapa(object):
         #paso 6
         for m in range(self.cantidad_de_capas() - 1):
             filas = deltas[self.cantidad_de_capas() - 1 -m].size
-            columnas = self.capa_numero(m+1).valores().size
+            #en realidad existe una columna mas que no se usa, sabe dios para que es
+            columnas = self.capa_numero(m+1).cantidad_neuronas()
             delta_matriz = np.zeros(( filas, columnas))
             for i in range(filas):
                 for k in range(columnas):
                     delta_matriz[i][k] = coeficiente_aprendisaje * deltas[self.cantidad_de_capas() - 1 -m][i]*self.capa_numero(m+1).valores()[k]
-            #Problema, no dan las dimenciones
-            print "Cantidad De filas en la matriz delta:"
-            print delta_matriz[0].size
-            print "Cantidad De filas en la matriz de pesos:"
-            print self.matriz_de_pesos_numero(m)[0].size
-            print "Wtf"
+            self._matrices[m] = np.add(self.matriz_de_pesos_numero(m),delta_matriz)
         pass
 
     def entrenar(self, inputs, clasificaciones):
-        # TODO: ver si hacerlo como batch, mini-batch, etc
-        for input, clasificacion in zip(inputs, clasificaciones):
-            resultado_forwardeo = self._forward_propagation(input)
-            #print resultado_forwardeo
-            self._back_propagation(clasificacion, resultado_forwardeo)
+        for i in range(200):
+            # TODO: ver si hacerlo como batch, mini-batch, etc
+            for input, clasificacion in zip(inputs, clasificaciones):
+                resultado_forwardeo = self._forward_propagation(input)
+                #print resultado_forwardeo
+                self._back_propagation(clasificacion, resultado_forwardeo)
 
 
