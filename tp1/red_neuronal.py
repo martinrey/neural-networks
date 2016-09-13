@@ -11,10 +11,21 @@ class Capa(object):
     def cantidad_neuronas(self):
         return self._cantidad_neuronas
 
-    def evaluar(self):
+    def evaluar_en_derivada(self):
+        nueva_capa = self.__class__(self._cantidad_neuronas ,self._funcion_activacion )
+        valores = np.zeros(self._cantidad_neuronas)
         for i in range(self.cantidad_neuronas()):
-            self._valores[i] = self._funcion_activacion.evaluar_en(self._valores[i])
-        return self
+            valores[i] = self._funcion_activacion.derivar_y_evaluar_en(self._valores[i])
+        nueva_capa.set_valores(valores)
+        return nueva_capa
+
+    def evaluar(self):
+        nueva_capa = self.__class__(self._cantidad_neuronas ,self._funcion_activacion )
+        valores = np.zeros(self._cantidad_neuronas)
+        for i in range(self.cantidad_neuronas()):
+            valores[i] = self._funcion_activacion.evaluar_en(self._valores[i])
+        nueva_capa.set_valores(valores)
+        return nueva_capa
 
     def valores(self):
         return self._valores
@@ -60,6 +71,7 @@ class PerceptronMulticapa(object):
         return self._matrices[numero_matriz]
 
     def inicializar_pesos(self):
+        np.random.seed(1)
         for indice_capa in range(self.cantidad_de_capas() - 1):
             self._matrices.append(
                 np.random.rand(self.capa_numero(indice_capa).cantidad_neuronas() + 1,
@@ -67,11 +79,11 @@ class PerceptronMulticapa(object):
             )
 
     def _forward_propagation(self, input):
-        self.capa_numero(0).set_valores(input).evaluar()
+        self._capas[0] = self.capa_numero(0).set_valores(input).evaluar()
         for indice_capa in range(self.cantidad_de_capas() - 1):
             np_dot = np.dot(self.capa_numero(indice_capa).valores(), self.matriz_de_pesos_numero(indice_capa))
-            self.capa_numero(indice_capa + 1).set_valores(np_dot).evaluar()
-        return self.capa_numero(self.cantidad_de_capas() - 1).evaluar().valores()
+            self._capas[indice_capa + 1] = self.capa_numero(indice_capa + 1).set_valores(np_dot).evaluar()
+        return self.capa_numero(self.cantidad_de_capas() - 1).valores()
 
     def _back_propagation(self, clasificacion, resultado_forwardeo):
         pass
