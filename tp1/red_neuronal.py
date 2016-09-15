@@ -89,11 +89,12 @@ class PerceptronMulticapa(object):
         return self.capa_numero(self.cantidad_de_capas() - 1).valores()
 
     #usando el algoritmo pag. 120 del hertz
-    def _back_propagation(self, clasificacion, resultado_forwardeo):
+    def _back_propagation(self, clasificacion, resultado_forwardeo, error):
         coeficiente_aprendisaje = 1
         #Paso 4 (1-3 son forward)
         derivada_ultima_capa = self.capa_numero(self.cantidad_de_capas() - 1).evaluar_en_derivada().valores()
         diferencia_respuestas_esperada_obtenida = np.subtract(clasificacion, resultado_forwardeo)
+        error.append(diferencia_respuestas_esperada_obtenida)
         delta_ultima_capa = np.multiply(derivada_ultima_capa,diferencia_respuestas_esperada_obtenida)
         deltas = []
         deltas.append(delta_ultima_capa)
@@ -128,10 +129,13 @@ class PerceptronMulticapa(object):
 
     def entrenar(self, inputs, clasificaciones):
         for i in range(200):
+            error = []
+            #print i
             # TODO: ver si hacerlo como batch, mini-batch, etc
             for input, clasificacion in zip(inputs, clasificaciones):
                 resultado_forwardeo = self._forward_propagation(input)
                 #print resultado_forwardeo
-                self._back_propagation(clasificacion, resultado_forwardeo)
+                self._back_propagation(clasificacion, resultado_forwardeo, error)
+            print np.linalg.norm(error)
 
 

@@ -31,7 +31,8 @@ if __name__ == "__main__":
     identidad = Identidad()
     sigmoidea = SigmoideaLogistica(cte=1)
 
-    capa_1 = CapaInterna(cantidad_neuronas=10, funcion_activacion=identidad)
+    #WARNING: poner funcion de activiacion=identidad hace que diverja todo al chori
+    capa_1 = CapaInterna(cantidad_neuronas=10, funcion_activacion=sigmoidea)
     capa_2 = CapaInterna(cantidad_neuronas=30, funcion_activacion=sigmoidea)
     capa_3 = CapaInterna(cantidad_neuronas=20, funcion_activacion=sigmoidea)
     capa_4 = CapaInterna(cantidad_neuronas=20, funcion_activacion=sigmoidea)
