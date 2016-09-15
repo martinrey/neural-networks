@@ -1,5 +1,5 @@
 import numpy as np
-
+from random import shuffle
 
 # Clase abstracta
 class Capa(object):
@@ -90,10 +90,12 @@ class PerceptronMulticapa(object):
 
     #usando el algoritmo pag. 120 del hertz
     def _back_propagation(self, clasificacion, resultado_forwardeo, error):
-        coeficiente_aprendisaje = 1
+        coeficiente_aprendisaje = 0.1
         #Paso 4 (1-3 son forward)
         derivada_ultima_capa = self.capa_numero(self.cantidad_de_capas() - 1).evaluar_en_derivada().valores()
+        #print clasificacion
         diferencia_respuestas_esperada_obtenida = np.subtract(clasificacion, resultado_forwardeo)
+       	#print diferencia_respuestas_esperada_obtenida
         error.append(diferencia_respuestas_esperada_obtenida)
         delta_ultima_capa = np.multiply(derivada_ultima_capa,diferencia_respuestas_esperada_obtenida)
         deltas = []
@@ -128,14 +130,26 @@ class PerceptronMulticapa(object):
         pass
 
     def entrenar(self, inputs, clasificaciones):
+        instancias = zip(inputs, clasificaciones)
+        test, entrenamiento = self.split(instancias, 1.0/3)
+        print "Iniciando Aprendisaje"
+        #Minibatch con instancias randomizadas:
         for i in range(200):
             error = []
-            #print i
-            # TODO: ver si hacerlo como batch, mini-batch, etc
-            for input, clasificacion in zip(inputs, clasificaciones):
+            shuffle(entrenamiento)
+            for input, clasificacion in entrenamiento:
                 resultado_forwardeo = self._forward_propagation(input)
-                #print resultado_forwardeo
                 self._back_propagation(clasificacion, resultado_forwardeo, error)
-            print np.linalg.norm(error)
+            print "Iteracion: %d, Norma del errpr: %f" % (i , np.linalg.norm(error))
+        #testeo que tan buenos resultados obtengo:
+        print "Inicio Testeo de resutados:"
+        for input, clasificacion in test:
+            resultado_forwardeo = self._forward_propagation(input)
+            print "Prediccion: %f Verdad: %f" % (resultado_forwardeo, clasificacion) 
 
 
+
+    #valor numero entre 0 y 1
+    def split(self, inputs, valor):
+	    proporcion = len(inputs)*valor
+	    return inputs[:int(proporcion)], inputs[int(proporcion):]

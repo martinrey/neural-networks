@@ -24,7 +24,7 @@ def normalizar(instancias):
 
     for i in range(cantidad_de_instancias):
         for j in range(cantidad_de_atributos):
-            instancias[i][j] = (instancias[i][j]-medias[j])/varianza_muestral[j]
+            instancias[i][j] = (instancias[i][j]-medias[j] + 1)/varianza_muestral[j]
     return instancias
 
 if __name__ == "__main__":
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     capa_4 = CapaInterna(cantidad_neuronas=20, funcion_activacion=sigmoidea)
     capa_5 = CapaSalida(cantidad_neuronas=1, funcion_activacion=sigmoidea)
 
-    capas = [capa_1, capa_2, capa_3, capa_4, capa_5]
+    capas = [capa_1,capa_2, capa_5]
 
     perceptron_multicapa = PerceptronMulticapa(capas)
     perceptron_multicapa.inicializar_pesos()

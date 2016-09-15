@@ -23,7 +23,7 @@ class SigmoideaLogistica(Funcion):
             if(punto > 0):
                 resultado = 1.0
             else:
-                resultado = -1
+                resultado = 0.0
 
         return resultado
 
@@ -34,7 +34,11 @@ class SigmoideaLogistica(Funcion):
 # Clase concreta
 class Identidad(Funcion):
     def evaluar_en(self, punto):
-        return punto
+        if(punto > 0.5):
+            return 1
+        else:
+            return 0
 
     def derivar_y_evaluar_en(self, punto):
+        print "dasdas"
         return punto
