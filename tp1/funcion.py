@@ -42,3 +42,11 @@ class Identidad(Funcion):
     def derivar_y_evaluar_en(self, punto):
         print "dasdas"
         return punto
+
+# Clase concreta
+class Tanh(Funcion):
+    def evaluar_en(self, punto):
+        return np.tanh(punto)
+
+    def derivar_y_evaluar_en(self, punto):
+        return 1 - (np.tanh(punto)**2)

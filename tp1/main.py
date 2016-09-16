@@ -1,4 +1,4 @@
-from funcion import SigmoideaLogistica, Identidad
+from funcion import SigmoideaLogistica, Identidad, Tanh
 from lector_de_instancias import LectorDeInstancias
 from red_neuronal import PerceptronMulticapa, CapaInterna, CapaSalida
 from adapters import InstanciaAPerceptronAdapter
@@ -24,17 +24,18 @@ def normalizar(instancias):
 
     for i in range(cantidad_de_instancias):
         for j in range(cantidad_de_atributos):
-            instancias[i][j] = (instancias[i][j]-medias[j] + 1)/varianza_muestral[j]
+            instancias[i][j] = (instancias[i][j]-medias[j])/varianza_muestral[j]
     return instancias
 
 if __name__ == "__main__":
+    tanh = Tanh()
     identidad = Identidad()
     sigmoidea = SigmoideaLogistica(cte=1)
 
     #WARNING: poner funcion de activiacion=identidad hace que diverja todo al chori
     capa_1 = CapaInterna(cantidad_neuronas=10, funcion_activacion=sigmoidea)
-    capa_2 = CapaInterna(cantidad_neuronas=30, funcion_activacion=sigmoidea)
-    capa_3 = CapaInterna(cantidad_neuronas=20, funcion_activacion=sigmoidea)
+    capa_2 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
+    capa_3 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
     capa_4 = CapaInterna(cantidad_neuronas=20, funcion_activacion=sigmoidea)
     capa_5 = CapaSalida(cantidad_neuronas=1, funcion_activacion=sigmoidea)
 
