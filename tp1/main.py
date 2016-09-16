@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     #WARNING: poner funcion de activiacion=identidad hace que diverja todo al chori
     capa_1 = CapaInterna(cantidad_neuronas=10, funcion_activacion=sigmoidea)
-    capa_2 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
+    capa_2 = CapaInterna(cantidad_neuronas=200, funcion_activacion=sigmoidea)
     capa_3 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
     capa_4 = CapaInterna(cantidad_neuronas=20, funcion_activacion=sigmoidea)
     capa_5 = CapaSalida(cantidad_neuronas=1, funcion_activacion=sigmoidea)
@@ -42,7 +42,6 @@ if __name__ == "__main__":
     capas = [capa_1,capa_2, capa_5]
 
     perceptron_multicapa = PerceptronMulticapa(capas)
-    perceptron_multicapa.inicializar_pesos()
 
     lector_de_instancias = LectorDeInstancias(archivo='tp1_ej1_training.csv')
     conjunto_de_instancias_de_entrenamiento = lector_de_instancias.leer()
@@ -53,6 +52,7 @@ if __name__ == "__main__":
         conjunto_de_instancias_vectorizadas.append(instancia_vectorizada)
         clasificaciones.append(clasificacion)
     conjunto_de_instancias_vectorizadas_normalizadas = normalizar(conjunto_de_instancias_vectorizadas)
+    perceptron_multicapa.inicializar_pesos(len(conjunto_de_instancias_vectorizadas))
     perceptron_multicapa.entrenar(conjunto_de_instancias_vectorizadas_normalizadas, clasificaciones)
 
 

@@ -82,13 +82,13 @@ class PerceptronMulticapa(object):
     def matriz_de_pesos_numero(self, numero_matriz):
         return self._matrices[numero_matriz]
 
-    def inicializar_pesos(self):
+    def inicializar_pesos(self, cantidad_de_instancias):
         np.random.seed(1)
         for indice_capa in range(self.cantidad_de_capas() - 1):
             self._delta_matrices.append( np.zeros((self.capa_numero(indice_capa).cantidad_neuronas(), self.capa_numero(indice_capa + 1).cantidad_neuronas())))
             self._matrices.append(
                 np.random.rand(self.capa_numero(indice_capa).cantidad_neuronas(),
-                               self.capa_numero(indice_capa + 1).cantidad_neuronas())*0.0000001
+                               self.capa_numero(indice_capa + 1).cantidad_neuronas())*(0.01/cantidad_de_instancias)
             )
 
     def _forward_propagation(self, input):
@@ -132,9 +132,13 @@ class PerceptronMulticapa(object):
             filas = deltas[self.cantidad_de_capas() - 1 -m].size
             #en realidad existe una columna mas que no se usa, sabe dios para que es
             columnas = self.capa_numero(m+1).cantidad_neuronas()
+
+            print np.outer(deltas[self.cantidad_de_capas() - 1 -m], self.capa_numero(m+1).valores()).size
             for i in range(filas):
                 for k in range(columnas):
-                    self._delta_matrices[m][i][k] = coeficiente_aprendisaje * deltas[self.cantidad_de_capas() - 1 -m][i]*self.capa_numero(m+1).valores()[k] + momentum * self._delta_matrices[m][i][k] 
+                    self._delta_matrices[m][i][k] = coeficiente_aprendisaje * deltas[self.cantidad_de_capas() - 1 -m][i]*self.capa_numero(m+1).valores()[k] #+ momentum * self._delta_matrices[m][i][k] 
+            print self._delta_matrices[m].size
+            input("Press Enter to continue...")
             #print self._delta_matrices
             self._matrices[m] = np.add(self.matriz_de_pesos_numero(m),self._delta_matrices[m])
         return
@@ -147,7 +151,7 @@ class PerceptronMulticapa(object):
         norma_del_error = 1000
         b = 0.5
         a = 0.0005
-        coeficiente_aprendisaje = 0.05
+        coeficiente_aprendisaje = 0.1
         momentum = 0.9
         for i in range(50):
             error = []
