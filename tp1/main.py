@@ -25,11 +25,11 @@ if __name__ == "__main__":
     #WARNING: poner funcion de activiacion=identidad hace que diverja todo al chori
     capa_1 = CapaInterna(cantidad_neuronas=10, funcion_activacion=sigmoidea)
     capa_2 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
-    capa_3 = CapaInterna(cantidad_neuronas=50, funcion_activacion=sigmoidea)
-    capa_4 = CapaInterna(cantidad_neuronas=20, funcion_activacion=sigmoidea)
+    capa_3 = CapaInterna(cantidad_neuronas=1000, funcion_activacion=sigmoidea)
+    capa_4 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
     capa_5 = CapaSalida(cantidad_neuronas=1, funcion_activacion=sigmoidea)
 
-    capas = [capa_1, capa_2, capa_5]
+    capas = [capa_1, capa_2,capa_3,capa_4, capa_5]
 
     perceptron_multicapa = PerceptronMulticapa(capas)
 

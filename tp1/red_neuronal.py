@@ -16,20 +16,10 @@ class Capa(object):
         return self._valores
 
     def evaluar_en_derivada(self):
-        nueva_capa = self.__class__(self._cantidad_neuronas, self._funcion_activacion)
-        valores = np.zeros(self.cantidad_neuronas())
-        for i in range(self.cantidad_neuronas()):
-            valores[i] = self._funcion_activacion.derivar_y_evaluar_en(self._valores[i])
-        nueva_capa.set_valores(valores)
-        return nueva_capa
+        return self._funcion_activacion.derivar_y_evaluar_en(self._valores)
 
     def evaluar(self):
-        nueva_capa = self.__class__(self._cantidad_neuronas, self._funcion_activacion)
-        valores = np.zeros(self.cantidad_neuronas())
-        for i in range(self.cantidad_neuronas()):
-            valores[i] = self._funcion_activacion.evaluar_en(self._valores[i])
-        nueva_capa.set_valores(valores)
-        return nueva_capa
+        return self._funcion_activacion.evaluar_en(self._valores)
 
 
 # Clase concreta
@@ -94,16 +84,16 @@ class PerceptronMulticapa(object):
             )
 
     def _forward_propagation(self, input):
-        self._capas[0] = self.capa_numero(0).set_valores(input).evaluar()
+        self._capas[0] = self.capa_numero(0).set_valores(input)
         for indice_capa in range(self.cantidad_de_capas() - 1):
-            np_dot = np.dot(self.capa_numero(indice_capa).valores(), self.matriz_de_pesos_numero(indice_capa))
-            self._capas[indice_capa + 1] = self.capa_numero(indice_capa + 1).set_valores(np_dot).evaluar()
-        return self.capa_numero(self.cantidad_de_capas() - 1).valores()
+            np_dot = np.dot(self.capa_numero(indice_capa).evaluar(), self.matriz_de_pesos_numero(indice_capa))
+            self._capas[indice_capa + 1].set_valores(np_dot)
+        return self.capa_numero(self.cantidad_de_capas() - 1).evaluar()
 
     # usando el algoritmo pag. 120 del hertz
     def _back_propagation(self, clasificacion, resultado_forwardeo, error, coeficiente_aprendisaje, momentum=0.9):
         # Paso 4 (1-3 son forward)
-        derivada_ultima_capa = self.capa_numero(self.cantidad_de_capas() - 1).evaluar_en_derivada().valores()
+        derivada_ultima_capa = self.capa_numero(self.cantidad_de_capas() - 1).evaluar_en_derivada()
         diferencia_respuestas_esperada_obtenida = np.subtract(clasificacion, resultado_forwardeo)
         error.append(diferencia_respuestas_esperada_obtenida)
         delta_ultima_capa = np.multiply(derivada_ultima_capa, diferencia_respuestas_esperada_obtenida)
@@ -111,7 +101,7 @@ class PerceptronMulticapa(object):
         deltas.append(delta_ultima_capa)
         # paso 5
         for i in range(self.cantidad_de_capas() - 2, -1, -1):
-            derivada_capa_i = self.capa_numero(i).evaluar_en_derivada().valores()
+            derivada_capa_i = self.capa_numero(i).evaluar_en_derivada()
             derivada_capa_i_mas_uno = deltas[-1]
             producto_matriz_y_vector_delta = np.dot(derivada_capa_i_mas_uno,
                                                     np.transpose(self.matriz_de_pesos_numero(i)))
@@ -119,7 +109,7 @@ class PerceptronMulticapa(object):
             deltas.append(delta_capa_i)
         # paso 6
         for m in range(self.cantidad_de_capas() - 1):
-            self._delta_matrices[m] = coeficiente_aprendisaje * np.outer(deltas[self.cantidad_de_capas() - 1 - m], self.capa_numero(m + 1).valores()) + momentum * self._delta_matrices[m]
+            self._delta_matrices[m] = coeficiente_aprendisaje * np.outer(deltas[self.cantidad_de_capas() - 1 - m], self.capa_numero(m + 1).evaluar()) + momentum * self._delta_matrices[m]
             self._matrices[m] = np.add(self.matriz_de_pesos_numero(m), self._delta_matrices[m])
         return
 
