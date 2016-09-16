@@ -19,8 +19,8 @@ class SigmoideaLogistica(Funcion):
         try:
             resultado = 1.0 / (1.0 + np.exp(-1.0 * self._cte * punto))
         except FloatingPointError:
-            #print punto
-            if(punto > 0):
+            # print punto
+            if (punto > 0.0):
                 resultado = 1.0
             else:
                 resultado = 0.0
@@ -34,14 +34,11 @@ class SigmoideaLogistica(Funcion):
 # Clase concreta
 class Identidad(Funcion):
     def evaluar_en(self, punto):
-        if(punto > 0.5):
-            return 1
-        else:
-            return 0
+        return punto
 
     def derivar_y_evaluar_en(self, punto):
-        print "dasdas"
-        return punto
+        return 1.0
+
 
 # Clase concreta
 class Tanh(Funcion):
@@ -49,4 +46,4 @@ class Tanh(Funcion):
         return np.tanh(punto)
 
     def derivar_y_evaluar_en(self, punto):
-        return 1 - (np.tanh(punto)**2)
+        return 1 - (np.tanh(punto) ** 2)

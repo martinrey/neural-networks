@@ -2,29 +2,19 @@ from funcion import SigmoideaLogistica, Identidad, Tanh
 from lector_de_instancias import LectorDeInstancias
 from red_neuronal import PerceptronMulticapa, CapaInterna, CapaSalida
 from adapters import InstanciaAPerceptronAdapter
+import numpy as np
+
 
 def normalizar(instancias):
-    medias = []
-    varianza_muestral = []
     cantidad_de_instancias = len(instancias)
-    cantidad_de_atributos = len(instancias[0])
-    for i in range(cantidad_de_atributos):
-        medias.append(0)
-        varianza_muestral.append(0)
-    for i in range(cantidad_de_instancias):
-        for j in range(cantidad_de_atributos):
-            medias[j] += instancias[i][j]
-    for i in range(cantidad_de_atributos):
-        medias[i] = medias[i]/(1.0*cantidad_de_instancias)
-    for i in range(cantidad_de_atributos):
-        for j in range(cantidad_de_atributos):
-            varianza_muestral[j] += (instancias[i][j] - medias[j]) ** 2
-    for j in range(cantidad_de_atributos):
-        varianza_muestral[j] = varianza_muestral[j]/(cantidad_de_instancias-1)
+
+    medias = np.mean(instancias,axis=0)
+    varianza_muestral = np.var(instancias,axis=0)
+    cantidad_de_atributos = len(medias)
 
     for i in range(cantidad_de_instancias):
         for j in range(cantidad_de_atributos):
-            instancias[i][j] = (instancias[i][j]-medias[j])/varianza_muestral[j]
+            instancias[i][j] = (instancias[i][j]-medias[j] +1)/varianza_muestral[j]
     return instancias
 
 if __name__ == "__main__":
@@ -34,12 +24,12 @@ if __name__ == "__main__":
 
     #WARNING: poner funcion de activiacion=identidad hace que diverja todo al chori
     capa_1 = CapaInterna(cantidad_neuronas=10, funcion_activacion=sigmoidea)
-    capa_2 = CapaInterna(cantidad_neuronas=200, funcion_activacion=sigmoidea)
-    capa_3 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
+    capa_2 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
+    capa_3 = CapaInterna(cantidad_neuronas=50, funcion_activacion=sigmoidea)
     capa_4 = CapaInterna(cantidad_neuronas=20, funcion_activacion=sigmoidea)
     capa_5 = CapaSalida(cantidad_neuronas=1, funcion_activacion=sigmoidea)
 
-    capas = [capa_1,capa_2, capa_5]
+    capas = [capa_1, capa_2, capa_5]
 
     perceptron_multicapa = PerceptronMulticapa(capas)
 
