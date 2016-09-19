@@ -13,25 +13,31 @@ def normalizar(instancias):
     cantidad_de_atributos = len(medias)
 
     for i in range(cantidad_de_instancias):
-        for j in range(cantidad_de_atributos):
-            instancias[i][j] = (instancias[i][j]-medias[j] +1)/varianza_muestral[j]
-    return instancias
+        instancias[i] = (instancias[i]-medias)/np.sqrt(varianza_muestral)
+
+    primer_cuartil = np.percentile(instancias, 25,axis=0)
+    tercer_cuartil = np.percentile(instancias, 75,axis=0)
+
+    IRQ = tercer_cuartil - primer_cuartil
+    outlier = IRQ * 1.5
+    cota_inferior = primer_cuartil - outlier
+    cota_superior = tercer_cuartil + outlier
+
+    resutaldo = []
+    for inst in instancias:
+        instancia_tiene_outliers = np.any(np.logical_or(np.less(inst, cota_inferior), np.greater(inst, cota_superior)))
+        if(instancia_tiene_outliers == False):
+            resutaldo.append(inst)
+        else:
+            print "outlier encontrado!"
+            print np.logical_or(np.less(inst, cota_inferior), np.greater(inst, cota_superior))
+
+    return resutaldo
 
 if __name__ == "__main__":
     tanh = Tanh()
     identidad = Identidad()
     sigmoidea = SigmoideaLogistica(cte=1)
-
-    #WARNING: poner funcion de activiacion=identidad hace que diverja todo al chori
-    capa_1 = CapaInterna(cantidad_neuronas=10, funcion_activacion=sigmoidea)
-    capa_2 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
-    capa_3 = CapaInterna(cantidad_neuronas=1000, funcion_activacion=sigmoidea)
-    capa_4 = CapaInterna(cantidad_neuronas=100, funcion_activacion=sigmoidea)
-    capa_5 = CapaSalida(cantidad_neuronas=1, funcion_activacion=sigmoidea)
-
-    capas = [capa_1, capa_2,capa_3,capa_4, capa_5]
-
-    perceptron_multicapa = PerceptronMulticapa(capas)
 
     lector_de_instancias = LectorDeInstancias(archivo='tp1_ej1_training.csv')
     conjunto_de_instancias_de_entrenamiento = lector_de_instancias.leer()
@@ -42,8 +48,16 @@ if __name__ == "__main__":
         conjunto_de_instancias_vectorizadas.append(instancia_vectorizada)
         clasificaciones.append(clasificacion)
     conjunto_de_instancias_vectorizadas_normalizadas = normalizar(conjunto_de_instancias_vectorizadas)
-    perceptron_multicapa.inicializar_pesos(len(conjunto_de_instancias_vectorizadas))
-    perceptron_multicapa.entrenar(conjunto_de_instancias_vectorizadas_normalizadas, clasificaciones)
+
+    for i in range(1):
+        #WARNING: poner funcion de activiacion=identidad hace que diverja todo al chori
+        capa_1 = CapaInterna(cantidad_neuronas=6, funcion_activacion=tanh)
+        capa_2 = CapaInterna(cantidad_neuronas=25, funcion_activacion=tanh)
+        capa_3 = CapaSalida(cantidad_neuronas=1, funcion_activacion=tanh)
+        capas = [capa_1,capa_2, capa_3]
+        perceptron_multicapa = PerceptronMulticapa(capas)
+        mejor_norma = perceptron_multicapa.entrenar(conjunto_de_instancias_vectorizadas_normalizadas, clasificaciones)
+        print "Entrenamiento con %d, Norma: %f neuronas" % (i+1,mejor_norma)
 
 
     

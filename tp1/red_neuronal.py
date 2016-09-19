@@ -79,8 +79,8 @@ class PerceptronMulticapa(object):
             self._delta_matrices.append(np.zeros((self.capa_numero(indice_capa).cantidad_neuronas(),
                                                   self.capa_numero(indice_capa + 1).cantidad_neuronas())))
             self._matrices.append(
-                np.ones((self.capa_numero(indice_capa).cantidad_neuronas(),
-                               self.capa_numero(indice_capa + 1).cantidad_neuronas())) * (1.0 /np.sqrt(cantidad_de_instancias))
+                np.random.normal(size=(self.capa_numero(indice_capa).cantidad_neuronas(),
+                               self.capa_numero(indice_capa + 1).cantidad_neuronas()),scale=1.0/np.sqrt(cantidad_de_instancias))
             )
 
     def _forward_propagation(self, input):
@@ -88,7 +88,7 @@ class PerceptronMulticapa(object):
         for indice_capa in range(self.cantidad_de_capas() - 1):
             np_dot = np.dot(self.capa_numero(indice_capa).evaluar(), self.matriz_de_pesos_numero(indice_capa))
             self._capas[indice_capa + 1].set_valores(np_dot)
-        return self.capa_numero(self.cantidad_de_capas() - 1).evaluar()
+        return self.capa_numero(self.cantidad_de_capas()-1).evaluar()
 
     # usando el algoritmo pag. 120 del hertz
     def _back_propagation(self, clasificacion, resultado_forwardeo, error, coeficiente_aprendisaje, momentum=0.9):
@@ -116,13 +116,14 @@ class PerceptronMulticapa(object):
     def entrenar(self, inputs, clasificaciones):
         instancias = zip(inputs, clasificaciones)
         test, entrenamiento = self.split(instancias, 1.0 / 3)
-        print "Iniciando Aprendisaje"
-        # Minibatch con instancias randomizadas:
+        self.inicializar_pesos(len(entrenamiento))
+        #print "Iniciando Aprendisaje"
         norma_del_error = 1000
-        b = 0.5
-        a = 0.0005
+        b = 0.9
+        a = 0.000
         coeficiente_aprendisaje = 0.1
-        momentum = 0.9
+        momentum = 0.6
+        # Minibatch con instancias randomizadas:
         for i in range(100):
             error = []
             shuffle(entrenamiento)
@@ -130,23 +131,19 @@ class PerceptronMulticapa(object):
                 resultado_forwardeo = self._forward_propagation(input)
                 self._back_propagation(clasificacion, resultado_forwardeo, error, coeficiente_aprendisaje, momentum)
                 #print resultado_forwardeo
-            print "Iteracion: %d, Norma del errpr: %f" % (i, np.linalg.norm(error))
+            #print "Iteracion: %d, Norma del errpr: %f" % (i, np.linalg.norm(error))
             if (norma_del_error - np.linalg.norm(error) < 0):
-                print "Mas error, aflojo"
-                momentum = 0
+                #print "Mas error, aflojo"
                 coeficiente_aprendisaje -= b * coeficiente_aprendisaje
             else:
-                momentum = 0.9
                 coeficiente_aprendisaje += a
             norma_del_error = np.linalg.norm(error)
-
         # testeo que tan buenos resultados obtengo:
-        print "Inicio Testeo de resutados:"
+        #print "Inicio Testeo de resutados:"
         for input, clasificacion in test:
             resultado_forwardeo = self._forward_propagation(input)
-            print "Prediccion: %f Verdad: %f" % (resultado_forwardeo, clasificacion)
-
-
+        #    print "Prediccion: %f Verdad: %f" % (resultado_forwardeo, clasificacion)
+        return norma_del_error
 
             # valor numero entre 0 y 1
 
