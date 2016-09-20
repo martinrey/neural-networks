@@ -60,6 +60,7 @@ class PerceptronMulticapa(object):
         self._capas = capas
         self._matrices = []
         self._delta_matrices = []
+        self._delta_matrices_old = []
 
     def cantidad_de_capas(self):
         return len(self._capas)
@@ -76,12 +77,20 @@ class PerceptronMulticapa(object):
     def inicializar_pesos(self, cantidad_de_instancias):
         np.random.seed(10)
         for indice_capa in range(self.cantidad_de_capas() - 1):
-            self._delta_matrices.append(np.zeros((self.capa_numero(indice_capa).cantidad_neuronas(),
+            self._delta_matrices_old.append(np.zeros((self.capa_numero(indice_capa).cantidad_neuronas(),
                                                   self.capa_numero(indice_capa + 1).cantidad_neuronas())))
             self._matrices.append(
                 np.random.normal(size=(self.capa_numero(indice_capa).cantidad_neuronas(),
                                self.capa_numero(indice_capa + 1).cantidad_neuronas()),scale=1.0/np.sqrt(cantidad_de_instancias))
             )
+
+
+    def inicializar_pesos_mat_delta(self, cantidad_de_instancias):
+        np.random.seed(10)
+        for indice_capa in range(self.cantidad_de_capas() - 1):
+            self._delta_matrices.append(np.zeros((self.capa_numero(indice_capa).cantidad_neuronas(),
+                                                  self.capa_numero(indice_capa + 1).cantidad_neuronas())))
+
 
     def _forward_propagation(self, input):
         self._capas[0] = self.capa_numero(0).set_valores(input)
@@ -109,41 +118,64 @@ class PerceptronMulticapa(object):
             deltas.append(delta_capa_i)
         # paso 6
         for m in range(self.cantidad_de_capas() - 1):
-            self._delta_matrices[m] = coeficiente_aprendisaje * np.outer(deltas[self.cantidad_de_capas() - 1 - m], self.capa_numero(m + 1).evaluar()) + momentum * self._delta_matrices[m]
-            self._matrices[m] = np.add(self.matriz_de_pesos_numero(m), self._delta_matrices[m])
+            self._delta_matrices[m] = self._delta_matrices[m] + (coeficiente_aprendisaje * np.outer(deltas[self.cantidad_de_capas() - 1 - m], self.capa_numero(m + 1).evaluar()))
         return
 
     def entrenar(self, inputs, clasificaciones):
         instancias = zip(inputs, clasificaciones)
-        test, entrenamiento = self.split(instancias, 1.0 / 3)
+        test, entrenamiento = self.split(instancias, 1.0 / 5)
         self.inicializar_pesos(len(entrenamiento))
-        #print "Iniciando Aprendisaje"
+        print "Iniciando Aprendisaje"
         norma_del_error = 1000
         b = 0.9
-        a = 0.000
-        coeficiente_aprendisaje = 0.1
-        momentum = 0.6
+        a = 0.00001
+        coeficiente_aprendisaje = 0.001
+        momentum = 0.1
+        contador_de_errores = 0
         # Minibatch con instancias randomizadas:
-        for i in range(100):
+        for i in range(500):
             error = []
             shuffle(entrenamiento)
+            self.inicializar_pesos_mat_delta(len(entrenamiento))
             for input, clasificacion in entrenamiento:
                 resultado_forwardeo = self._forward_propagation(input)
                 self._back_propagation(clasificacion, resultado_forwardeo, error, coeficiente_aprendisaje, momentum)
-                #print resultado_forwardeo
+                #print "%f %f" % (resultado_forwardeo, clasificacion)
+            for m in range(self.cantidad_de_capas() - 1):
+            	self._matrices[m] = self._matrices[m] + self._delta_matrices[m] + (momentum * self._delta_matrices_old[m])
+                self._delta_matrices_old[m] = self._delta_matrices[m]
             #print "Iteracion: %d, Norma del errpr: %f" % (i, np.linalg.norm(error))
             if (norma_del_error - np.linalg.norm(error) < 0):
                 #print "Mas error, aflojo"
                 coeficiente_aprendisaje -= b * coeficiente_aprendisaje
+                if(contador_de_errores > 3):
+                    #print "Cantidad de errores alcanzado, Fin de entrenamiento!"
+                    break
+                else:
+                    contador_de_errores = contador_de_errores + 1
             else:
                 coeficiente_aprendisaje += a
             norma_del_error = np.linalg.norm(error)
         # testeo que tan buenos resultados obtengo:
         #print "Inicio Testeo de resutados:"
+        asiertos  = 0
+        fallos = 0
         for input, clasificacion in test:
             resultado_forwardeo = self._forward_propagation(input)
-        #    print "Prediccion: %f Verdad: %f" % (resultado_forwardeo, clasificacion)
-        return norma_del_error
+            #print "Prediccion: %f Verdad: %f" % (resultado_forwardeo, clasificacion)
+            if(resultado_forwardeo > 0.0):
+                resultado_forwardeo = 1.0
+            if(resultado_forwardeo < 0.0):
+                resultado_forwardeo = -1.0
+            if(clasificacion == resultado_forwardeo):
+                asiertos = asiertos + 1
+            else:
+                fallos = fallos + 1
+
+        #print "Asiertos: %d Fallos: %d" % (asiertos, fallos)
+        porcentaje_aciertos = ((1.0 * asiertos/ (fallos+asiertos)) * 100.0)
+        print "Porcentaje De Aciertos: %f" % porcentaje_aciertos
+        return porcentaje_aciertos
 
             # valor numero entre 0 y 1
 
