@@ -46,4 +46,4 @@ class Tanh(Funcion):
         return np.tanh(punto)
 
     def derivar_y_evaluar_en(self, punto):
-        return 1 - (np.tanh(punto) ** 2)
+        return 1.0 - (np.tanh(punto) ** 2)
