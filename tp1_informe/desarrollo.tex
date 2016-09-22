@@ -16,11 +16,28 @@ Como optimización adicional se agrego un termino de momentum. La idea tras esto
 
 Para este problema utilizaremos una neurona en la ulima capa con función de activación $tanh$. Para ser consistentes con esto, las salidas esperadas adoptarán los valores 1 si resulto ser cancer maligno, y -1.0 si resulto ser benigno. La experimentación consistirá en buscar los parametros optimos que nos den la mayor tasa de aciertos para nuestro data set.
 
-Como primera instancia buscamos cual era la cantidad optima de neuronas necesarias para la resolución del problema, fijamos el learning rate en $0.01$ y el momentum en $0.9$ y graficamos los datos obtenidos:
-%Grafico
+Como primera instancia buscamos cual era la cantidad optima de neuronas necesarias para la resolución del problema, fijamos el learning rate en $0.01$ y el momentum en $0.9$, y fijamos para una capa oculta, graficamos los datos obtenidos:
+
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[scale=0.5]{neruonas_vs_aciertos.png}
+\end{figure}
+
+El modelo no parece adaptar mejor para una mayor cantidad de neuronas, seteamos la cantidad de neuronas en $70$ ya que ahí parece alcanzar el mejor valor.
+
+Luego variamos el learning rate, dejando todos los otros parametros como antes, lo obtenido puede verse en el siguiente grafico:
+
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[scale=0.5]{learning_rate.png}
+\end{figure}
+
+En el grafico puede obsercarse que para un learning rate de $1/	46$ parece haber un maximo en la cantidad de aciertos de $55\%$ . Luego nos quedamos con este valor.
+
 %completar
 Despues learning rate, y momentum
 
 \subsection{Performance Regreción Lineal Calor} 
 
 %falta implementar
+Por cuestiones de tiempo este ejercicio no fue probado de manera adecuada
