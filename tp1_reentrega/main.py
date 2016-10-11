@@ -33,16 +33,29 @@ def cargar_problema_a_aprender(datos_csv, adapter):
     return parsear_a_mlp(conjunto_de_instancias_vectorizadas_normalizadas, clasificaciones)
 
 
+def split(inputs, valor):
+    proporcion = len(inputs) * valor
+    return inputs[:int(proporcion)], inputs[int(proporcion):]
+
+
 if __name__ == "__main__":
     instancia_cancer_a_perceptron_adapter = InstanciaCancerAPerceptronAdapter()
     inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej1_training.csv',
                                                  adapter=instancia_cancer_a_perceptron_adapter)
-    q = perceptron_multicapa.PerceptronMulticapa(inputs, targets, 40)
-    q.entrenar(inputs, targets, 0.01, 5001, "logistica")
-    q.matriz_de_confusion(inputs, targets)
+    for i in range(40):
+        inputs_test, inputs_entrenamiento = split(inputs, 1.0/4 )
+        targets_test, targets_entrenamiento = split(targets, 1.0/4 )
+        q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 13)
+        q.entrenar(inputs_entrenamiento, targets_entrenamiento, 0.02, 1500, "logistica", vervose=0)
+        q.matriz_de_confusion(inputs_test, targets_test)
 
-    instancia_carga_energetica_a_perceptron_adapter = InstanciaCargaEnergeticaAPerceptronAdapter()
-    inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej2_training.csv',
-                                                 adapter=instancia_carga_energetica_a_perceptron_adapter)
-    q = perceptron_multicapa.PerceptronMulticapa(inputs, targets, 400)
-    q.entrenar(inputs, targets, 0.02, 100001, "lineal")
+
+    # for i in range(25):
+    #     instancia_carga_energetica_a_perceptron_adapter = InstanciaCargaEnergeticaAPerceptronAdapter()
+    #     inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej2_training.csv',
+    #                                                  adapter=instancia_carga_energetica_a_perceptron_adapter)
+    #     inputs_test, inputs_entrenamiento = split(inputs, 1.0/3 )
+    #     targets_test, targets_entrenamiento = split(targets, 1.0/3 )
+    #     q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, (i+1)*200)
+    #     q.entrenar(inputs_entrenamiento, targets_entrenamiento, 0.02, 5001, "lineal")
+    #     q.matriz_de_confusion(inputs_test, targets_test)
