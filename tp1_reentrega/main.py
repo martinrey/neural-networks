@@ -43,10 +43,11 @@ if __name__ == "__main__":
     inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej1_training.csv',
                                                  adapter=instancia_cancer_a_perceptron_adapter)
     # for i in range(40):
+    #     funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),SigmoideaLogistica(1)]
     #     inputs_test, inputs_entrenamiento = split(inputs, 1.0/4 )
     #     targets_test, targets_entrenamiento = split(targets, 1.0/4 )
-    #     q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 13)
-    #     q.entrenar(inputs_entrenamiento, targets_entrenamiento, 0.02, 1500, "logistica", vervose=0)
+    #     q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 7,funciones)
+    #     q.entrenar( 0.02, 3500, "logistica", verbose=0)
     #     q.matriz_de_confusion(inputs_test, targets_test)
 
 
@@ -57,7 +58,7 @@ if __name__ == "__main__":
     targets_test, targets_entrenamiento = split(targets, 1.0/3 )
     for i in range(25):
         funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),Identidad()]
-        q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, (i+1)*200,funciones)
-        q.entrenar(0.02, 5001, "lineal", verbose=1)
+        q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 30,funciones)
+        q.entrenar(0.02, 50001, "lineal", verbose=1)
         q.comparar_resultdos(inputs_test, targets_test,"lineal")
 

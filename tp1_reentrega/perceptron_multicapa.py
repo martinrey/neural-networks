@@ -16,8 +16,8 @@ class PerceptronMulticapa:
         self.beta = beta
         self.momentum = momentum
 
-        self.weights1 = (np.random.rand(self.cantidad_neuronas_entrada + 1, self.cantidad_neuronas_capa_oculta) - 0.5) * 2 / np.sqrt(self.cantidad_neuronas_entrada)
-        self.weights2 = (np.random.rand(self.cantidad_neuronas_capa_oculta + 1, self.cantidad_neuronas_salida) - 0.5) * 2 / np.sqrt(self.cantidad_neuronas_capa_oculta)
+        self.weights1 = np.random.normal(size=(self.cantidad_neuronas_entrada + 1, self.cantidad_neuronas_capa_oculta),scale= 1/np.sqrt(self.cantidad_neuronas_entrada))
+        self.weights2 = np.random.normal(size=(self.cantidad_neuronas_capa_oculta + 1, self.cantidad_neuronas_salida),scale= 1/np.sqrt(self.cantidad_neuronas_capa_oculta))
         self.weights = [self.weights1,self.weights2]
 
     def entrenar(self, eta, niterations, tipo_funcion,verbose=0):
@@ -32,9 +32,9 @@ class PerceptronMulticapa:
                     print "Iteration: ", n, " Error: ", error
 
             if tipo_funcion == 'lineal':
-                deltao = (outputs - self.targets_entrenamiento) / self.cantidad_instancias_dataset
+                deltao = self.funciones[-1].derivar_y_evaluar_en(self.capas[-1])*(outputs - self.targets_entrenamiento)/np.linalg.norm(error)
             elif tipo_funcion == 'logistica':
-                deltao = self.beta * (outputs - self.targets_entrenamiento) * outputs * (1.0 - outputs)
+                deltao = self.funciones[-1].derivar_y_evaluar_en(self.capas[-1])*(outputs - self.targets_entrenamiento)
 
             deltah = self.capas[1] * self.beta * (1.0 - self.capas[1]) * (np.dot(deltao, np.transpose(self.weights2)))
             updatew1 = eta * (np.dot(np.transpose(self.capas[0]), deltah[:, :-1])) + self.momentum * updatew1
@@ -54,7 +54,6 @@ class PerceptronMulticapa:
         return self.funciones[-1].evaluar_en(outputs)
 
     def matriz_de_confusion(self, inputs, targets):
-        inputs = np.concatenate((inputs, -np.ones((np.shape(inputs)[0], 1))), axis=1)
         outputs = self.forwarding(inputs, "logistica")
         nclasses = 2
         outputs = np.where(outputs > 0.5, 1, 0)
