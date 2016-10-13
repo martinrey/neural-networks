@@ -2,7 +2,7 @@ from lector_de_instancias import LectorDeInstancias
 from adapters import InstanciaCancerAPerceptronAdapter, InstanciaCargaEnergeticaAPerceptronAdapter
 import numpy as np
 import perceptron_multicapa
-
+from funcion import SigmoideaLogistica, Identidad
 
 def normalizar(instancias):
     cantidad_de_instancias = len(instancias)
@@ -42,20 +42,22 @@ if __name__ == "__main__":
     instancia_cancer_a_perceptron_adapter = InstanciaCancerAPerceptronAdapter()
     inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej1_training.csv',
                                                  adapter=instancia_cancer_a_perceptron_adapter)
-    for i in range(40):
-        inputs_test, inputs_entrenamiento = split(inputs, 1.0/4 )
-        targets_test, targets_entrenamiento = split(targets, 1.0/4 )
-        q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 13)
-        q.entrenar(inputs_entrenamiento, targets_entrenamiento, 0.02, 1500, "logistica", vervose=0)
-        q.matriz_de_confusion(inputs_test, targets_test)
-
-
-    # for i in range(25):
-    #     instancia_carga_energetica_a_perceptron_adapter = InstanciaCargaEnergeticaAPerceptronAdapter()
-    #     inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej2_training.csv',
-    #                                                  adapter=instancia_carga_energetica_a_perceptron_adapter)
-    #     inputs_test, inputs_entrenamiento = split(inputs, 1.0/3 )
-    #     targets_test, targets_entrenamiento = split(targets, 1.0/3 )
-    #     q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, (i+1)*200)
-    #     q.entrenar(inputs_entrenamiento, targets_entrenamiento, 0.02, 5001, "lineal")
+    # for i in range(40):
+    #     inputs_test, inputs_entrenamiento = split(inputs, 1.0/4 )
+    #     targets_test, targets_entrenamiento = split(targets, 1.0/4 )
+    #     q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 13)
+    #     q.entrenar(inputs_entrenamiento, targets_entrenamiento, 0.02, 1500, "logistica", vervose=0)
     #     q.matriz_de_confusion(inputs_test, targets_test)
+
+
+    instancia_carga_energetica_a_perceptron_adapter = InstanciaCargaEnergeticaAPerceptronAdapter()
+    inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej2_training.csv',
+                                                     adapter=instancia_carga_energetica_a_perceptron_adapter)
+    inputs_test, inputs_entrenamiento = split(inputs, 1.0/3 )
+    targets_test, targets_entrenamiento = split(targets, 1.0/3 )
+    for i in range(25):
+        funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),Identidad()]
+        q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, (i+1)*200,funciones)
+        q.entrenar(0.02, 5001, "lineal", verbose=1)
+        q.comparar_resultdos(inputs_test, targets_test,"lineal")
+
