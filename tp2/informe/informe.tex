@@ -1,0 +1,33 @@
+\documentclass[10pt, a4paper]{article}
+\usepackage[spanish]{babel} % espanol.
+%Lo pongo en english para que me compile :S.
+
+\usepackage[utf8]{inputenc}
+\usepackage{enumerate} % enumerados
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{multicol}
+\graphicspath{ {img/} }
+\usepackage[paper=a4paper, left=1.5cm, right=1.5cm, bottom=1.5cm, top=3.5cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage[colorlinks=true, linkcolor=black]{hyperref}
+\usepackage{a4wide}
+\usepackage{tikz}
+\usepackage{epsf}
+\usepackage{caratula}
+
+\begin{document}
+
+\input{caratula.tex}
+\tableofcontents
+\section{Introduccion}
+\input{intro.tex}
+\section{Desarrollo}
+\input{desarrollo.tex}
+\section{Concluciones}
+\input{concluciones.tex}
+
+\end{document}
+
