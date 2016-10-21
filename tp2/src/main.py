@@ -22,12 +22,21 @@ def cargar_problema_a_aprender(datos_csv, adapter):
     return parsear_a_mlp(conjunto_de_instancias_vectorizadas, clasificaciones)
 
 
-def test_mapeo():
-    test = np.array([[1,1],[3000,-1000]])
-    test_res = np.array([])
+def test_mapeo_1():
+    #ejercicio 2 de la practica
+    test = []
+    test_res = []
+    for i in range(1,3):
+        for j in range(1,3):
+            for cantidad_instancias in range(10):
+                test.append([np.random.uniform(low=1+(i*4),high=2+(i*4)), np.random.uniform(low=1+(j*4),high=2+(j*4))])
+                test_res.append([(i+j])
+    test = np.array(test)
+    test_res = np.array(test_res)
+    print test
     red_mapeo = Red_mapeo_caracteristicas(test,test_res,10,10)
-    red_mapeo.entrenar(0.01)
-    red_mapeo.testear(test)
+    red_mapeo.entrenar(0.1)
+    red_mapeo.testear(test,test_res)
     exit(0)
 
 def correr_hebbs():
@@ -47,6 +56,6 @@ def correr_mapeo():
     exit(0)
 
 if __name__ == "__main__":
-    test_mapeo()
+    test_mapeo_1()
 
 

@@ -12,7 +12,7 @@ class Red_hebbs:
 
         self.weights = np.random.normal(size=(self.cantidad_neuronas_entrada, self.cantidad_neuronas_salida),scale= 1/np.sqrt(self.cantidad_neuronas_entrada))
 
-        np.seterr(all='raise')
+        np.seterr(over='raise')
 
     def entrenar(self,learning_rate):
         for i in range(100):
@@ -46,14 +46,13 @@ class Red_mapeo_caracteristicas:
         self.inputs_entrenamiento = inputs
         self.targets_entrenamiento = targets
         self.weights = np.random.normal(size=(self.cantidad_neuronas_entrada, self.fila_mapa * self.columna_mapa),scale= 1/np.sqrt(self.cantidad_neuronas_entrada))
-        np.seterr(all='raise')
+        np.seterr(over='raise')
 
     def entrenar(self, learning_rate):
-        for i in range(100):
+        for i in range(1000):
             for instancia in self.inputs_entrenamiento:
                 y = self.activacion(instancia)
                 self.correccion(instancia,y,i+1,learning_rate)
-            print i
 
 
     #Falta debugear y ver que todas las cuentas esten bien
@@ -85,12 +84,12 @@ class Red_mapeo_caracteristicas:
     def variance(self,epoca):
         return (self.columna_mapa/2.0)* epoca**(-1.0/3.0)
 
-    def testear(self,instancias):
-        for instancia in instancias:
+    def testear(self,instancias, clasificaciones):
+        test_set = zip(instancias,clasificaciones)
+        for (instancia,clasificacion) in test_set:
             index = np.argmax(np.dot(instancia,self.weights))
-            print np.dot(instancia,self.weights)
             punto = [(index/self.fila_mapa) +1, (index%self.columna_mapa) +1]
-            print punto
+            print punto,clasificacion
             plt.scatter(punto[0],punto[1])
         plt.axis([0,self.fila_mapa , 0,self.columna_mapa])
         plt.show()
