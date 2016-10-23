@@ -2,12 +2,22 @@ import numpy as np
 from red_neuronal import Red_hebbs,Red_mapeo_caracteristicas
 from lector_de_instancias import LectorDeInstancias
 from adapters import InstanciaCompania
+from learning_rates import Learning_rate_tipo_1,Learning_rate_tipo_2,Learning_rate_tipo_3
 
 
 def parsear_a_mlp(inputs, outputs):
     inputs_parseados = np.asarray(inputs)
     outputs_parseados = np.asarray(outputs)
     return inputs_parseados, outputs_parseados
+
+def normalizar(instancias):
+    cantidad_de_instancias = len(instancias)
+    medias = np.mean(instancias, axis=0)
+    varianza_muestral = np.var(instancias, axis=0)
+    for i in range(cantidad_de_instancias):
+        instancias[i] = (instancias[i] - medias) / np.sqrt(varianza_muestral)
+    return instancias
+
 
 def cargar_problema_a_aprender(datos_csv, adapter):
     lector_de_instancias = LectorDeInstancias(archivo=datos_csv)
@@ -29,13 +39,14 @@ def test_mapeo_1():
     for i in range(1,3):
         for j in range(1,3):
             for cantidad_instancias in range(10):
-                test.append([np.random.uniform(low=1+(i*4),high=2+(i*4)), np.random.uniform(low=1+(j*4),high=2+(j*4))])
-                test_res.append([(i+j])
+                test.append([np.random.uniform(low=1+(i*10),high=2+(i*10)), np.random.uniform(low=1+(j*10),high=2+(j*10))])
+                test_res.append([i+j])
     test = np.array(test)
     test_res = np.array(test_res)
-    print test
-    red_mapeo = Red_mapeo_caracteristicas(test,test_res,10,10)
-    red_mapeo.entrenar(0.1)
+    #Normalizar la entrada es necesario para obtener buenos resultados
+    #No hacerlo reduce significativamente las capacidades de aprendisaje
+    red_mapeo = Red_mapeo_caracteristicas(normalizar(test),test_res,10,10)
+    red_mapeo.entrenar(Learning_rate_tipo_1())
     red_mapeo.testear(test,test_res)
     exit(0)
 
@@ -50,7 +61,10 @@ def correr_hebbs():
     exit(0)
     
 def correr_mapeo():
-    red_mapeo = Red_mapeo_caracteristicas(inputs,targets,40,40)
+    instancia_Compania_a_perceptron_adapter = InstanciaCompania()
+    inputs, targets = cargar_problema_a_aprender(datos_csv='tp2_training_dataset.csv',
+                                                 adapter=instancia_Compania_a_perceptron_adapter)
+    red_mapeo = Red_mapeo_caracteristicas(normalizar(inputs),targets,40,40)
     red_mapeo.entrenar(0.01)
     red_mapeo.testear(linea)
     exit(0)

@@ -14,6 +14,8 @@ class Red_hebbs:
 
         np.seterr(over='raise')
 
+
+
     def entrenar(self,learning_rate):
         for i in range(100):
             for instancia in self.inputs_entrenamiento:
@@ -38,7 +40,7 @@ class Red_hebbs:
 
 
 class Red_mapeo_caracteristicas:
-    def __init__(self, inputs, targets, fila_mapa, columna_mapa):
+    def __init__(self, inputs, targets, fila_mapa, columna_mapa,):
         self.cantidad_neuronas_entrada = np.shape(inputs)[1]
         self.cantidad_instancias_dataset = np.shape(inputs)[0]
         self.fila_mapa = fila_mapa
@@ -49,10 +51,14 @@ class Red_mapeo_caracteristicas:
         np.seterr(over='raise')
 
     def entrenar(self, learning_rate):
-        for i in range(1000):
+        iteraciones = 1000
+        for i in range(iteraciones):
+            #np.random.shuffle(self.inputs_entrenamiento)
             for instancia in self.inputs_entrenamiento:
                 y = self.activacion(instancia)
                 self.correccion(instancia,y,i+1,learning_rate)
+            if (i * 100) % iteraciones == 0:
+                print "Completo: ", (i * 100)/iteraciones, "%" 
 
 
     #Falta debugear y ver que todas las cuentas esten bien
@@ -65,7 +71,8 @@ class Red_mapeo_caracteristicas:
         #podria tener mas de un elemento en 1?
         j_ast = np.nonzero(y)[0][0]
         D = self.delta_func(j_ast,epoca)
-        delta_weights = learning_rate * np.dot((x - self.weights.T),D )
+        #Cambiado el learning rate adaptativo se deberian obtener diferentes resultados
+        delta_weights = learning_rate.calcular(epoca) * np.dot((x - self.weights.T),D )
         self.weights += delta_weights
         return
 
