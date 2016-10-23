@@ -64,12 +64,12 @@ def correr_mapeo():
     instancia_Compania_a_perceptron_adapter = InstanciaCompania()
     inputs, targets = cargar_problema_a_aprender(datos_csv='tp2_training_dataset.csv',
                                                  adapter=instancia_Compania_a_perceptron_adapter)
-    red_mapeo = Red_mapeo_caracteristicas(normalizar(inputs),targets,40,40)
-    red_mapeo.entrenar(0.01)
+    red_mapeo = Red_mapeo_caracteristicas(inputs,targets,40,40)
+    red_mapeo.entrenar(Learning_rate_tipo_1())
     red_mapeo.testear(linea)
     exit(0)
 
 if __name__ == "__main__":
-    test_mapeo_1()
+    correr_mapeo()
 
 

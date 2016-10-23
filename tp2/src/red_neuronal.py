@@ -40,6 +40,7 @@ class Red_hebbs:
 
 
 class Red_mapeo_caracteristicas:
+    #Optimizacion Posible: Los imputs estan formados de vectores esparsos (muchos ceros), utilizar syphi.sparce para mejorar performance
     def __init__(self, inputs, targets, fila_mapa, columna_mapa,):
         self.cantidad_neuronas_entrada = np.shape(inputs)[1]
         self.cantidad_instancias_dataset = np.shape(inputs)[0]

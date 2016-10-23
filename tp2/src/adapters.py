@@ -1,3 +1,5 @@
+from scipy import sparse
+
 class InstanciaCompania(object):
     def adaptar_esto(self, instancia):
     	instancia_adaptada = []
