@@ -54,7 +54,7 @@ def correr_hebbs():
     inputs, targets = cargar_problema_a_aprender(datos_csv='tp2_training_dataset.csv',
                                                  adapter=instancia_Compania_a_perceptron_adapter)
 
-    red_hebbs = Red_hebbs(inputs,3,0)
+    red_hebbs = Red_hebbs(inputs,3,'oja')
     red_hebbs.entrenar(0.01)
     red_hebbs.testear(inputs,targets)
     exit(0)
@@ -69,6 +69,6 @@ def correr_mapeo():
     exit(0)
 
 if __name__ == "__main__":
-    test_mapeo_1()
+    correr_hebbs()
 
 

@@ -12,6 +12,7 @@ class Red_hebbs:
         self.inputs_entrenamiento = inputs
         self.weights = np.random.normal(size=(self.cantidad_neuronas_entrada, self.cantidad_neuronas_salida),scale= 1/np.sqrt(self.cantidad_neuronas_entrada))
         np.seterr(over='raise')
+        self.mode = mode
 
     def entrenar(self,learning_rate):
         iteraciones = 100
@@ -22,7 +23,14 @@ class Red_hebbs:
                 delta_weights = np.zeros((self.cantidad_neuronas_entrada,self.cantidad_neuronas_salida))
                 for j in range(self.cantidad_neuronas_salida):
                     for i in range(self.cantidad_neuronas_entrada):
-                        for k in range(j+1):
+                        if self.mode == 'sanjer':
+                            iterador_para_k = range(j+1)
+                        elif self.mode == 'oja':
+                            iterador_para_k = range(self.cantidad_neuronas_salida)
+                        else:
+                            print "Error: modo no soportado"
+                            exit(1)
+                        for k in iterador_para_k:
                             x_raya[i] += y[k] * self.weights[i][k]
                         delta_weights[i,j] = learning_rate * (instancia[i] - x_raya[i])*y[j]
                 self.weights = self.weights + delta_weights
