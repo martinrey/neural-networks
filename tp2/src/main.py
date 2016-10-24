@@ -4,7 +4,6 @@ from lector_de_instancias import LectorDeInstancias
 from adapters import InstanciaCompania
 from learning_rates import Learning_rate_tipo_1,Learning_rate_tipo_2,Learning_rate_tipo_3
 
-
 def parsear_a_mlp(inputs, outputs):
     inputs_parseados = np.asarray(inputs)
     outputs_parseados = np.asarray(outputs)
@@ -45,7 +44,7 @@ def test_mapeo_1():
     test_res = np.array(test_res)
     #Normalizar la entrada es necesario para obtener buenos resultados
     #No hacerlo reduce significativamente las capacidades de aprendisaje
-    red_mapeo = Red_mapeo_caracteristicas(normalizar(test),test_res,10,10)
+    red_mapeo = Red_mapeo_caracteristicas(normalizar(test),10,10)
     red_mapeo.entrenar(Learning_rate_tipo_1())
     red_mapeo.testear(test,test_res)
     exit(0)
@@ -55,21 +54,21 @@ def correr_hebbs():
     inputs, targets = cargar_problema_a_aprender(datos_csv='tp2_training_dataset.csv',
                                                  adapter=instancia_Compania_a_perceptron_adapter)
 
-    red_hebbs = Red_hebbs(inputs,targets,2)
-    red_hebbs.entrenar(0.0001)
-    red_hebbs.testear(inputs)
+    red_hebbs = Red_hebbs(inputs,3,0)
+    red_hebbs.entrenar(0.01)
+    red_hebbs.testear(inputs,targets)
     exit(0)
     
 def correr_mapeo():
     instancia_Compania_a_perceptron_adapter = InstanciaCompania()
     inputs, targets = cargar_problema_a_aprender(datos_csv='tp2_training_dataset.csv',
                                                  adapter=instancia_Compania_a_perceptron_adapter)
-    red_mapeo = Red_mapeo_caracteristicas(inputs,targets,40,40)
+    red_mapeo = Red_mapeo_caracteristicas(inputs,40,40)
     red_mapeo.entrenar(Learning_rate_tipo_1())
-    red_mapeo.testear(linea)
+    red_mapeo.testear(linea,targets)
     exit(0)
 
 if __name__ == "__main__":
-    correr_mapeo()
+    test_mapeo_1()
 
 

@@ -1,23 +1,21 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.cm as cm
 
 class Red_hebbs:
-    def __init__(self, inputs, targets, cantidad_componentes_principales):
+    #TODO: mode usa oja o sanjer
+    def __init__(self, inputs, cantidad_componentes_principales, mode):
         self.cantidad_neuronas_entrada = np.shape(inputs)[1]
         self.cantidad_neuronas_salida = cantidad_componentes_principales
         self.cantidad_instancias_dataset = np.shape(inputs)[0]
-
         self.inputs_entrenamiento = inputs
-        self.targets_entrenamiento = targets
-
         self.weights = np.random.normal(size=(self.cantidad_neuronas_entrada, self.cantidad_neuronas_salida),scale= 1/np.sqrt(self.cantidad_neuronas_entrada))
-
         np.seterr(over='raise')
 
-
-
     def entrenar(self,learning_rate):
-        for i in range(100):
+        iteraciones = 100
+        for iteracion in range(iteraciones):
             for instancia in self.inputs_entrenamiento:
                 y = np.dot(instancia, self.weights)
                 x_raya = np.zeros(self.cantidad_neuronas_entrada)
@@ -28,26 +26,29 @@ class Red_hebbs:
                             x_raya[i] += y[k] * self.weights[i][k]
                         delta_weights[i,j] = learning_rate * (instancia[i] - x_raya[i])*y[j]
                 self.weights = self.weights + delta_weights
+            if (iteracion * 100) % iteraciones == 0:
+                print "Completo: ", (iteracion * 100)/iteraciones, "%" 
 
-    def testear(self,inputs):
-        rangox = 1
-        rangoy = 1
+    def testear(self,inputs,targets_entrenamiento):
         resultado = np.dot(inputs, self.weights)
-        print resultado
-        plt.scatter(resultado.T[0],resultado.T[1])
-        #plt.axis([np.amin(resultado[1])-rangox,np.amax(resultado[1])+rangox , np.amin(resultado[0])-rangoy,np.amax(resultado[0]) +rangoy])  
+        #print resultado
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.scatter(resultado.T[0],resultado.T[1],resultado.T[2],c=targets_entrenamiento)
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.set_zlabel('Z')
         plt.show()
 
 
 class Red_mapeo_caracteristicas:
     #Optimizacion Posible: Los imputs estan formados de vectores esparsos (muchos ceros), utilizar syphi.sparce para mejorar performance
-    def __init__(self, inputs, targets, fila_mapa, columna_mapa,):
+    def __init__(self, inputs, fila_mapa, columna_mapa,):
         self.cantidad_neuronas_entrada = np.shape(inputs)[1]
         self.cantidad_instancias_dataset = np.shape(inputs)[0]
         self.fila_mapa = fila_mapa
         self.columna_mapa = columna_mapa
         self.inputs_entrenamiento = inputs
-        self.targets_entrenamiento = targets
         self.weights = np.random.normal(size=(self.cantidad_neuronas_entrada, self.fila_mapa * self.columna_mapa),scale= 1/np.sqrt(self.cantidad_neuronas_entrada))
         np.seterr(over='raise')
 
@@ -93,11 +94,12 @@ class Red_mapeo_caracteristicas:
         return (self.columna_mapa/2.0)* epoca**(-1.0/3.0)
 
     def testear(self,instancias, clasificaciones):
+        colores = cm.rainbow(np.linspace(0, 1, 9))
         test_set = zip(instancias,clasificaciones)
         for (instancia,clasificacion) in test_set:
             index = np.argmax(np.dot(instancia,self.weights))
             punto = [(index/self.fila_mapa) +1, (index%self.columna_mapa) +1]
             print punto,clasificacion
-            plt.scatter(punto[0],punto[1])
+            plt.scatter(punto[0],punto[1], color=colores[clasificacion])
         plt.axis([0,self.fila_mapa , 0,self.columna_mapa])
         plt.show()
