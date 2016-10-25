@@ -1,0 +1,49 @@
+\subsection{PCA}
+EL primer modelo utilizado para intentar clasificar los datos será el de Analisis de Componentes Principales. Para ello utilizamremos dos algoritmos basados en aprendisaje Hebbiano y reduciremos las instancias de entrenamiento a 3 dimenciones. Lo que esperamos observar es que aquellas instancias que pertenecen a una misma clase de empresa se encuentran cercas unas de otras, pudiendo observar \"nuves\" de puntos bien definidas.
+
+\subsubsection{Implementación}
+
+En particular los algoritmos utilizados serán los de $Oja$ y $Sanger$. Teniendo una complegidad computacional identica y siendo los algoritmos muy similares, lo distintivo entre estos dos metodos es que $Sanger$ ordenará las componentes prinsipales de mayor a menor de acuerdo a sus autovalores mientras que $Oja$ no.
+
+El pseodocodigo utilizado para aprendisaje del algoritmo $Oja$ será:
+
+\begin{algorithm}
+\begin{algorithmic}[1]\parskip=1mm
+ \caption{ Algoritmo De Oja}
+ \STATE{Para toda instancia de entrenamiento, x}
+ \STATE{\quad $y = x.W$}
+ \STATE{\quad $\tilde x = y.W^T$}
+ \STATE{\quad $\Delta W = learning\_rate ((x - \tilde x)^T . y$}
+\end{algorithmic}
+\end{algorithm}
+
+Mientras que el de $Sanger$
+
+\begin{algorithm}
+\begin{algorithmic}[1]\parskip=1mm
+ \caption{ Algoritmo De Sanger}
+ \STATE{U = Matriz Triangular Superior Con 1s}
+ \STATE{Para toda instancia de entrenamiento, x}
+ \STATE{\quad $y = x.W$}
+ \STATE{\quad $\tilde  = W(y^T.U)$}
+ \STATE{\quad $\Delta W = learning\_rate ((x^T - \tilde x) . y$}
+\end{algorithmic}
+\end{algorithm}
+
+Utilizando el paquete numpy de python es posible traducir este codigo de manera casi exacta y de esa manera aprovechar las optimizaciones matriciales que se realizan sobre los datos.
+
+\subsubsection{Experimentación}
+
+Para la experimentación entrenamos la red con parte del set de datos que nos fue entregado
+
+%Neural Networks Haykin
+% In Chatterjee et al. (1998), the convergence properties of the GHA algorithm
+% described in Eq. (8.91) are investigated. The analysis presented therein shows that
+% increasing  leads to faster convergence and larger asymptotic mean-square error, which
+% is intuitively satisfying. In that paper, the tradeoff between the accuracy of computation
+% and speed of learning is made explicit.
+
+
+\subsection{Mapeo de Características}
+
+En este apartado construiremos un modelo de mapeo de caracteristicas auto-organizado con la intención de clasificar los documentos en un arreglo de dos dimenciones. Para ello utilizaremos el algoritmo de Kohonen sobre los datos de entrenamiento y una vez que la red haya convergido, graficaremos los las respuestas obtenidas en el plano.
