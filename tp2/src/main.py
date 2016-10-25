@@ -66,6 +66,7 @@ def correr_mapeo():
                                                  adapter=instancia_Compania_a_perceptron_adapter)
     red_mapeo = Red_mapeo_caracteristicas(inputs,40,40)
     red_mapeo.entrenar(Learning_rate_tipo_3())
+    red_mapeo.save_net()
     red_mapeo.testear(inputs,targets)
     exit(0)
 

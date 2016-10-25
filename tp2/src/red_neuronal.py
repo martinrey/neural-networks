@@ -55,7 +55,7 @@ class Red_mapeo_caracteristicas:
         #para optimizar creo esto aca
         self.j = np.arange(self.cantidad_neuronas_entrada*1.0)
 
-    def entrenar(self, learning_rate,iteraciones = 100):
+    def entrenar(self, learning_rate,iteraciones = 1000):
         for i in range(iteraciones):
             for instancia in self.inputs_entrenamiento:
                 y = self.activacion(instancia)
@@ -92,15 +92,21 @@ class Red_mapeo_caracteristicas:
     def variance(self,epoca):
         return (self.columna_mapa/2.0)* epoca**(-1.0/3.0)
 
-    def testear(self,instancias, clasificaciones, show_graphic=0):
-        colores = cm.rainbow(np.linspace(0, 1, 9))
+    def testear(self,instancias, clasificaciones, show_graphic=1):
+        colores = cm.rainbow(np.linspace(0, 1, 10))
         test_set = zip(instancias,clasificaciones)
         for (instancia,clasificacion) in test_set:
             index = np.argmax(np.dot(instancia,self.weights))
             punto = [(index/self.fila_mapa) +1, (index%self.columna_mapa) +1]
             print punto,clasificacion
             if show_graphic:
-                plt.scatter(punto[0],punto[1], color=colores[clasificacion])
+                plt.scatter(punto[0],punto[1], color=colores[int(clasificacion)])
         if show_graphic:
             plt.axis([0,self.fila_mapa , 0,self.columna_mapa])
             plt.show()
+
+    def save_net(self,string='red_mapeo_caracteristicas'):
+        np.save(file=(string+".npy"), arr=self.weights)
+
+    def load_net(self,string='red_mapeo_caracteristicas'):
+        self.weights = np.load(file= string+".npy")
