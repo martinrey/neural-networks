@@ -14,8 +14,7 @@ class Red_hebbs:
         np.seterr(over='raise')
         self.mode = mode
 
-    def entrenar(self,learning_rate):
-        iteraciones = 100
+    def entrenar(self,learning_rate, iteraciones = 10000):
         U = np.triu(np.ones((self.cantidad_neuronas_salida,self.cantidad_neuronas_salida) ))
         for iteracion in range(iteraciones):
             for instancia in self.inputs_entrenamiento:
@@ -28,14 +27,12 @@ class Red_hebbs:
                     x_raya = np.multiply( np.array([y]).T , U)
                     x_raya = np.dot(self.weights, x_raya)
                     delta_weights = learning_rate * (np.array([instancia]).T - x_raya) * y
-                
                 self.weights = self.weights + delta_weights
             if (iteracion * 100) % iteraciones == 0:
                 print "Completo: ", (iteracion * 100)/iteraciones, "%"
 
     def testear(self,inputs,targets_entrenamiento):
         resultado = np.dot(inputs, self.weights)
-        #print resultado
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.scatter(resultado.T[0],resultado.T[1],resultado.T[2],c=targets_entrenamiento)
@@ -55,11 +52,11 @@ class Red_mapeo_caracteristicas:
         self.inputs_entrenamiento = inputs
         self.weights = np.random.normal(size=(self.cantidad_neuronas_entrada, self.fila_mapa * self.columna_mapa),scale= 1/np.sqrt(self.cantidad_neuronas_entrada))
         np.seterr(over='raise')
+        #para optimizar creo esto aca
+        self.j = np.arange(self.cantidad_neuronas_entrada*1.0)
 
-    def entrenar(self, learning_rate):
-        iteraciones = 1000
+    def entrenar(self, learning_rate,iteraciones = 100):
         for i in range(iteraciones):
-            #np.random.shuffle(self.inputs_entrenamiento)
             for instancia in self.inputs_entrenamiento:
                 y = self.activacion(instancia)
                 self.correccion(instancia,y,i+1,learning_rate)
@@ -69,13 +66,14 @@ class Red_mapeo_caracteristicas:
 
     #Falta debugear y ver que todas las cuentas esten bien
     def activacion(self, x):
-        y_raya = np.linalg.norm(x - self.weights.T,axis=0)
+        y_raya = np.linalg.norm(x - self.weights.T,axis=1)
         y = (y_raya == np.amin(y_raya))*1.0
         return y
 
     def correccion(self,x,y,epoca,learning_rate):
         #podria tener mas de un elemento en 1?
-        j_ast = np.nonzero(y)[0][0]
+        j_ast = np.nonzero(y)
+        j_ast = j_ast[0][0]
         D = self.delta_func(j_ast,epoca)
         #Cambiado el learning rate adaptativo se deberian obtener diferentes resultados
         delta_weights = learning_rate.calcular(epoca) * np.dot((x - self.weights.T),D )
@@ -83,13 +81,10 @@ class Red_mapeo_caracteristicas:
         return
 
     def delta_func(self,j_ast,epoca):
-        rta = np.zeros(self.cantidad_neuronas_entrada)
         m = self.fila_mapa * self.columna_mapa
         varianza = self.variance(epoca)
         P_j = self.P(j_ast)
-        for j in range(m):
-            np.exp(-np.linalg.norm(self.P(j)- P_j)**2/(2.0*varianza**2))
-        return rta
+        return (np.exp(-np.linalg.norm(self.P(self.j).T - P_j,axis=1)**2)/(2.0*varianza**2))
 
     def P(self,j):
         return np.array([j / self.columna_mapa, np.mod(j,self.columna_mapa)])
