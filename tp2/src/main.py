@@ -15,6 +15,7 @@ def normalizar(instancias):
     varianza_muestral = np.var(instancias, axis=0)
     for i in range(cantidad_de_instancias):
         instancias[i] = (instancias[i] - medias) / np.sqrt(varianza_muestral)
+    	instancias[i][varianza_muestral == 0] = 0
     return instancias
 
 
@@ -27,7 +28,7 @@ def cargar_problema_a_aprender(datos_csv, adapter):
         instancia_vectorizada, clasificacion = adapter.adaptar_esto(instancia)
         conjunto_de_instancias_vectorizadas.append(instancia_vectorizada)
         clasificaciones.append(clasificacion)
-    #conjunto_de_instancias_vectorizadas_normalizadas = normalizar(conjunto_de_instancias_vectorizadas)
+    conjunto_de_instancias_vectorizadas_normalizadas = normalizar(conjunto_de_instancias_vectorizadas)
     return parsear_a_mlp(conjunto_de_instancias_vectorizadas, clasificaciones)
 
 
@@ -69,6 +70,6 @@ def correr_mapeo():
     exit(0)
 
 if __name__ == "__main__":
-    test_mapeo_1()
+    correr_mapeo()
 
 
