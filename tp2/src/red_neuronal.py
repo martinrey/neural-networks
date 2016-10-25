@@ -92,13 +92,15 @@ class Red_mapeo_caracteristicas:
     def variance(self,epoca):
         return (self.columna_mapa/2.0)* epoca**(-1.0/3.0)
 
-    def testear(self,instancias, clasificaciones):
+    def testear(self,instancias, clasificaciones, show_graphic=0):
         colores = cm.rainbow(np.linspace(0, 1, 9))
         test_set = zip(instancias,clasificaciones)
         for (instancia,clasificacion) in test_set:
             index = np.argmax(np.dot(instancia,self.weights))
             punto = [(index/self.fila_mapa) +1, (index%self.columna_mapa) +1]
             print punto,clasificacion
-            plt.scatter(punto[0],punto[1], color=colores[clasificacion])
-        plt.axis([0,self.fila_mapa , 0,self.columna_mapa])
-        plt.show()
+            if show_graphic:
+                plt.scatter(punto[0],punto[1], color=colores[clasificacion])
+        if show_graphic:
+            plt.axis([0,self.fila_mapa , 0,self.columna_mapa])
+            plt.show()
