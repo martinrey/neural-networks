@@ -16,26 +16,22 @@ class Red_hebbs:
 
     def entrenar(self,learning_rate):
         iteraciones = 100
+        U = np.triu(np.ones((self.cantidad_neuronas_salida,self.cantidad_neuronas_salida) ))
         for iteracion in range(iteraciones):
             for instancia in self.inputs_entrenamiento:
-                y = np.dot(instancia, self.weights)
-                x_raya = np.zeros(self.cantidad_neuronas_entrada)
-                delta_weights = np.zeros((self.cantidad_neuronas_entrada,self.cantidad_neuronas_salida))
-                for j in range(self.cantidad_neuronas_salida):
-                    for i in range(self.cantidad_neuronas_entrada):
-                        if self.mode == 'sanjer':
-                            iterador_para_k = range(j+1)
-                        elif self.mode == 'oja':
-                            iterador_para_k = range(self.cantidad_neuronas_salida)
-                        else:
-                            print "Error: modo no soportado"
-                            exit(1)
-                        for k in iterador_para_k:
-                            x_raya[i] += y[k] * self.weights[i][k]
-                        delta_weights[i,j] = learning_rate * (instancia[i] - x_raya[i])*y[j]
+                if self.mode == 'oja':
+                    y = np.dot(instancia, self.weights)
+                    x_raya = np.dot(y,self.weights.T)
+                    delta_weights = learning_rate * y * np.array([instancia - x_raya]).T
+                elif self.mode == 'sanjer':
+                    y = np.dot(instancia, self.weights)
+                    x_raya = np.multiply( np.array([y]).T , U)
+                    x_raya = np.dot(self.weights, x_raya)
+                    delta_weights = learning_rate * (np.array([instancia]).T - x_raya) * y
+                
                 self.weights = self.weights + delta_weights
             if (iteracion * 100) % iteraciones == 0:
-                print "Completo: ", (iteracion * 100)/iteraciones, "%" 
+                print "Completo: ", (iteracion * 100)/iteraciones, "%"
 
     def testear(self,inputs,targets_entrenamiento):
         resultado = np.dot(inputs, self.weights)
