@@ -14,7 +14,7 @@ class Red_hebbs:
         np.seterr(over='raise')
         self.mode = mode
 
-    def entrenar(self,learning_rate, iteraciones = 10000):
+    def entrenar(self,learning_rate, iteraciones = 100):
         U = np.triu(np.ones((self.cantidad_neuronas_salida,self.cantidad_neuronas_salida) ))
         for iteracion in range(iteraciones):
             for instancia in self.inputs_entrenamiento:
@@ -35,11 +35,18 @@ class Red_hebbs:
         resultado = np.dot(inputs, self.weights)
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
+        print resultado
         ax.scatter(resultado.T[0],resultado.T[1],resultado.T[2],c=targets_entrenamiento)
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
         plt.show()
+
+    def save_net(self,string='red_mapeo_caracteristicas'):
+        np.save(file=(string+".npy"), arr=self.weights)
+
+    def load_net(self,string='red_mapeo_caracteristicas'):
+        self.weights = np.load(file= string+".npy")
 
 
 class Red_mapeo_caracteristicas:
