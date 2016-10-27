@@ -29,7 +29,7 @@ def cargar_problema_a_aprender(datos_csv, adapter):
         instancia_vectorizada, clasificacion = adapter.adaptar_esto(instancia)
         conjunto_de_instancias_vectorizadas.append(instancia_vectorizada)
         clasificaciones.append(clasificacion)
-    conjunto_de_instancias_vectorizadas_normalizadas = normalizar(conjunto_de_instancias_vectorizadas)
+    #conjunto_de_instancias_vectorizadas_normalizadas = normalizar(conjunto_de_instancias_vectorizadas)
     return parsear_a_mlp(conjunto_de_instancias_vectorizadas, clasificaciones)
 
 
@@ -117,9 +117,9 @@ if __name__ == "__main__":
     train_set,testing_set = generate_train_and_test_set(inputs,targets)
     if option == 1:
         red_neuronal = Red_hebbs(train_set[0],3,'oja')
-        learning_rate = 0.00001
+        learning_rate = 0.1
     if option == 2:
-        red_neuronal = Red_mapeo_caracteristicas(train_set[0],20,20)
+        red_neuronal = Red_mapeo_caracteristicas(train_set[0],10,10)
         learning_rate = Learning_rate_tipo_3()
 
     if cargar_red:

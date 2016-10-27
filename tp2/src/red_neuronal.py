@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.cm as cm
+from collections import Counter
+import matplotlib
 
 class Red_hebbs:
     #TODO: mode usa oja o sanjer
@@ -64,7 +66,7 @@ class Red_mapeo_caracteristicas:
         #para optimizar creo esto aca
         self.array_P = np.array([[j / self.columna_mapa, np.mod(j,self.columna_mapa)] for j in range(self.fila_mapa * self.columna_mapa)])
 
-    def entrenar(self, learning_rate,iteraciones = 10):
+    def entrenar(self, learning_rate,iteraciones = 100):
         for i in range(iteraciones):
             for instancia in self.inputs_entrenamiento:
                 y = self.activacion(instancia)
@@ -104,15 +106,28 @@ class Red_mapeo_caracteristicas:
     def testear(self,instancias, clasificaciones, title, show_graphic=1):
         colores = cm.rainbow(np.linspace(0, 1, 10))
         test_set = zip(instancias,clasificaciones)
+        resultados = [[] for i in range(self.fila_mapa*self.columna_mapa)]
+        grafico = np.zeros((self.fila_mapa,self.columna_mapa))
         for (instancia,clasificacion) in test_set:
-            index = np.argmax(np.dot(instancia,self.weights))
+            y = self.activacion(instancia)
+            j_ast = np.nonzero(y)
+            index = j_ast[0][0]
+            resultados[index].append(clasificacion[0])
             punto = [(index/self.fila_mapa) +1, (index%self.columna_mapa) +1]
             print punto,clasificacion
-            if show_graphic:
-                plt.scatter(punto[0],punto[1], color=colores[int(clasificacion)])
+        for index in range(len(resultados)):
+            if resultados[index]:
+                data = Counter(resultados[index])
+                ganador = data.most_common(1)
+                grafico[(index/self.fila_mapa), (index%self.columna_mapa)] = ganador[0][0]
+            else:
+                grafico[(index/self.fila_mapa), (index%self.columna_mapa)] = np.nan
         if show_graphic:
-            plt.axis([0,self.fila_mapa , 0,self.columna_mapa])
-            plt.title(title)
+            #plt.axis([0,self.fila_mapa , 0,self.columna_mapa])
+            #plt.title(title)
+            cmap = matplotlib.cm.jet
+            cmap.set_bad('black',1.)
+            plt.matshow(grafico,cmap=cmap)
             plt.show()
 
     def save_net(self,string='red_mapeo_caracteristicas'):
