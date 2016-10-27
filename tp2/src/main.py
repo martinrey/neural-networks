@@ -38,10 +38,10 @@ def split(inputs, valor):
     return inputs[:int(proporcion)], inputs[int(proporcion):]
 
 def generate_train_and_test_set(inputs,targets):
-	proporcion = 0.2
-	test_data, train_data = split(inputs, 0.2)
-	test_targuets, train_targuets = split(targets,0.2)
-	return (train_data,train_targuets) , (test_data,test_targuets)
+    proporcion = 0.2
+    test_data, train_data = split(inputs, 0.2)
+    test_targuets, train_targuets = split(targets,0.2)
+    return (train_data,train_targuets) , (test_data,test_targuets)
 
 def test_mapeo_1():
     #ejercicio 2 de la practica
@@ -61,33 +61,13 @@ def test_mapeo_1():
     red_mapeo.testear(test,test_res)
     exit(0)
 
-def correr_hebbs(train_set,targets,guardar_red,output_net,cargar_red,red_a_utilizar,testing_set,testear_en_test_set=True,testear_en_train_set=True):
-    red_hebbs = Red_hebbs(train_set[0],3,'oja')
-    if cargar_red:
-        red_hebbs.load_net(red_a_utilizar)
-    else:
-        red_hebbs.entrenar(0.001)
-    if guardar_red:
-        red_hebbs.save_net(output_net)
-    if testear_en_test_set:
-    	red_hebbs.testear(testing_set[0],testing_set[1],'Testeo Sobre Datos De Testeo')
-    if testear_en_train_set:
-    	red_hebbs.testear(train_set[0],train_set[1],title='Testeo Sobre Datos De Entrenamiento')
-    exit(0)
-    
-def correr_mapeo(train_set,targets,guardar_red,output_net,cargar_red,red_a_utilizar,testing_set,testear_en_test_set=True,testear_en_train_set=True):
-    red_mapeo = Red_mapeo_caracteristicas(train_set[0],40,40)
-    if cargar_red:
-        red_mapeo.load_net(red_a_utilizar)
-    else:
-        red_mapeo.entrenar(Learning_rate_tipo_3())
-    if guardar_red:
-        red_mapeo.save_net(output_net)
-    if testear_en_test_set:
-    	red_hebbs.testear(testing_set[0],testing_set[1],title='Testeo Sobre Datos De Testeo')
-    if testear_en_train_set:
-    	red_hebbs.testear(train_set[0],train_set[1],title='Testeo Sobre Datos De Entrenamiento')
-    exit(0)
+def print_flags():
+    print 'python main.py numero_ejercicio'
+    print "-i <inputfile> \t\t archivo de entrenamiento"
+    print "-o <outputfile> \t Archivo donde guardar red"
+    print "-n <net> \t\t Red a utilizar"
+    print "-t <testing> \t\t Archivo contra el que testear"
+    print "-g \t\t Graficar Resultados"
 
 if __name__ == "__main__":
     uso_input = False
@@ -98,32 +78,23 @@ if __name__ == "__main__":
     output_net=''
     red_a_utilizar=''
     testing = ''
+    graficar_resultados = False
+    testear_en_test_set = True
+    testear_en_train_set = True
 
     if(len(sys.argv) <= 1):
-        print 'python main.py numero_ejercicio'
-        print "-i <inputfile> \t\t archivo de entrenamiento"
-        print "-o <outputfile> \t Archivo donde guardar red"
-        print "-n <net> \t\t Red a utilizar"
-        print "-t <testing> \t\t Archivo contra el que testear"
+        print_flags()
         sys.exit()
     argv = sys.argv[2:]
     option = int(sys.argv[1])
     try:
-        opts, args = getopt.getopt(argv,"hi:o:n:t:",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:o:n:t:g",["ifile=","ofile="])
     except getopt.GetoptError:
-        print 'test.py numero_ejercicio'
-        print "-i <inputfile> \t\t archivo de entrenamiento"
-        print "-o <outputfile> \t Archivo donde guardar red"
-        print "-n <net> \t\t Red a utilizar"
-        print "-t <testing> \t\t Archivo contra el que testear"
+        print_flags()
         sys.exit()
     for opt, arg in opts:
         if opt == '-h':
-            print 'test.py numero_ejercicio'
-            print "-i <inputfile> \t\t archivo de entrenamiento"
-            print "-o <outputfile> \t Archivo donde guardar red"
-            print "-n <net> \t\t Red a utilizar"
-            print "-t <testing> \t\t Archivo contra el que testear"
+            print_flags()
             sys.exit()
         elif opt in ("-i", "--inputfile"):
             uso_input = True
@@ -137,16 +108,28 @@ if __name__ == "__main__":
         elif opt in ("-t", "--testing"):
             testear_resultados = True
             testing = arg
+        elif opt in ("-g", "--graphix"):
+            graficar_resultados = True
 
     instancia_Compania_a_perceptron_adapter = InstanciaCompania()
     inputs, targets = cargar_problema_a_aprender(datos_csv=entrenamiento,
                                                  adapter=instancia_Compania_a_perceptron_adapter)
-
-    train, testing = generate_train_and_test_set(inputs,targets)
-
+    train_set,testing_set = generate_train_and_test_set(inputs,targets)
     if option == 1:
-        correr_hebbs(train, targets,guardar_red,output_net,cargar_red,red_a_utilizar,testing)
+        red_neuronal = Red_hebbs(train_set[0],3,'oja')
+        learning_rate = 0.00001
     if option == 2:
-        correr_mapeo(train, targets,guardar_red,output_net,cargar_red,red_a_utilizar,testing)
+        red_neuronal = Red_mapeo_caracteristicas(train_set[0],40,40)
+        learning_rate = Learning_rate_tipo_3()
 
-
+    if cargar_red:
+        red_neuronal.load_net(red_a_utilizar)
+    else:
+        red_neuronal.entrenar(learning_rate)
+    if guardar_red:
+        red_neuronal.save_net(output_net)
+    if testear_en_test_set:
+        red_neuronal.testear(testing_set[0],testing_set[1],title='Testeo Sobre Datos De Testeo',show_graphic=graficar_resultados)
+    if testear_en_train_set:
+        red_neuronal.testear(train_set[0],train_set[1],title='Testeo Sobre Datos De Entrenamiento',show_graphic=graficar_resultados)
+    exit(0)

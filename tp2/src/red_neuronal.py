@@ -31,17 +31,18 @@ class Red_hebbs:
             if (iteracion * 100) % iteraciones == 0:
                 print "Completo: ", (iteracion * 100)/iteraciones, "%"
 
-    def testear(self,inputs,targets_entrenamiento, title):
+    def testear(self,inputs,targets_entrenamiento, title, show_graphic=1):
         resultado = np.dot(inputs, self.weights)
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
         print resultado
-        ax.scatter(resultado.T[0],resultado.T[1],resultado.T[2],c=targets_entrenamiento)
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
-        plt.title(title)
-        plt.show()
+        if show_graphic:
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            ax.scatter(resultado.T[0],resultado.T[1],resultado.T[2],c=targets_entrenamiento)
+            ax.set_xlabel('X')
+            ax.set_ylabel('Y')
+            ax.set_zlabel('Z')
+            plt.title(title)
+            plt.show()
 
     def save_net(self,string='red_mapeo_caracteristicas'):
         np.save(file=(string+".npy"), arr=self.weights)
