@@ -119,7 +119,7 @@ if __name__ == "__main__":
         red_neuronal = Red_hebbs(train_set[0],3,'oja')
         learning_rate = 0.00001
     if option == 2:
-        red_neuronal = Red_mapeo_caracteristicas(train_set[0],40,40)
+        red_neuronal = Red_mapeo_caracteristicas(train_set[0],20,20)
         learning_rate = Learning_rate_tipo_3()
 
     if cargar_red:

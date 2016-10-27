@@ -62,7 +62,7 @@ class Red_mapeo_caracteristicas:
         self.weights = np.random.normal(size=(self.cantidad_neuronas_entrada, self.fila_mapa * self.columna_mapa),scale= 1/np.sqrt(self.cantidad_neuronas_entrada))
         np.seterr(over='raise')
         #para optimizar creo esto aca
-        self.j = np.arange(self.cantidad_neuronas_entrada*1.0)
+        self.array_P = np.array([[j / self.columna_mapa, np.mod(j,self.columna_mapa)] for j in range(self.fila_mapa * self.columna_mapa)])
 
     def entrenar(self, learning_rate,iteraciones = 10):
         for i in range(iteraciones):
@@ -85,18 +85,18 @@ class Red_mapeo_caracteristicas:
         j_ast = j_ast[0][0]
         D = self.delta_func(j_ast,epoca)
         #Cambiado el learning rate adaptativo se deberian obtener diferentes resultados
-        delta_weights = learning_rate.calcular(epoca) * np.dot((x - self.weights.T),D )
+        delta_weights = learning_rate.calcular(epoca) * D * (x - self.weights.T).T
         self.weights += delta_weights
         return
 
     def delta_func(self,j_ast,epoca):
         m = self.fila_mapa * self.columna_mapa
         varianza = self.variance(epoca)
-        P_j = self.P(j_ast)
-        return (np.exp(-np.linalg.norm(self.P(self.j).T - P_j,axis=1)**2)/(2.0*varianza**2))
+        P_j_ast = self.P(j_ast)
+        return (np.exp(-np.linalg.norm(self.array_P - P_j_ast,axis=1)**2)/(2.0*varianza**2))
 
     def P(self,j):
-        return np.array([j / self.columna_mapa, np.mod(j,self.columna_mapa)])
+        return self.array_P[j]
 
     def variance(self,epoca):
         return (self.columna_mapa/2.0)* epoca**(-1.0/3.0)
