@@ -31,7 +31,7 @@ class Red_hebbs:
             if (iteracion * 100) % iteraciones == 0:
                 print "Completo: ", (iteracion * 100)/iteraciones, "%"
 
-    def testear(self,inputs,targets_entrenamiento):
+    def testear(self,inputs,targets_entrenamiento, title):
         resultado = np.dot(inputs, self.weights)
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
@@ -40,6 +40,7 @@ class Red_hebbs:
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
+        plt.title(title)
         plt.show()
 
     def save_net(self,string='red_mapeo_caracteristicas'):
@@ -62,7 +63,7 @@ class Red_mapeo_caracteristicas:
         #para optimizar creo esto aca
         self.j = np.arange(self.cantidad_neuronas_entrada*1.0)
 
-    def entrenar(self, learning_rate,iteraciones = 1000):
+    def entrenar(self, learning_rate,iteraciones = 10):
         for i in range(iteraciones):
             for instancia in self.inputs_entrenamiento:
                 y = self.activacion(instancia)
@@ -99,7 +100,7 @@ class Red_mapeo_caracteristicas:
     def variance(self,epoca):
         return (self.columna_mapa/2.0)* epoca**(-1.0/3.0)
 
-    def testear(self,instancias, clasificaciones, show_graphic=1):
+    def testear(self,instancias, clasificaciones, title, show_graphic=1):
         colores = cm.rainbow(np.linspace(0, 1, 10))
         test_set = zip(instancias,clasificaciones)
         for (instancia,clasificacion) in test_set:
@@ -110,6 +111,7 @@ class Red_mapeo_caracteristicas:
                 plt.scatter(punto[0],punto[1], color=colores[int(clasificacion)])
         if show_graphic:
             plt.axis([0,self.fila_mapa , 0,self.columna_mapa])
+            plt.title(title)
             plt.show()
 
     def save_net(self,string='red_mapeo_caracteristicas'):

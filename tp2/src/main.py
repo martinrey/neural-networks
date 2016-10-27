@@ -33,6 +33,16 @@ def cargar_problema_a_aprender(datos_csv, adapter):
     return parsear_a_mlp(conjunto_de_instancias_vectorizadas, clasificaciones)
 
 
+def split(inputs, valor):
+    proporcion = len(inputs) * valor
+    return inputs[:int(proporcion)], inputs[int(proporcion):]
+
+def generate_train_and_test_set(inputs,targets):
+	proporcion = 0.2
+	test_data, train_data = split(inputs, 0.2)
+	test_targuets, train_targuets = split(targets,0.2)
+	return (train_data,train_targuets) , (test_data,test_targuets)
+
 def test_mapeo_1():
     #ejercicio 2 de la practica
     test = []
@@ -51,26 +61,32 @@ def test_mapeo_1():
     red_mapeo.testear(test,test_res)
     exit(0)
 
-def correr_hebbs(inputs,targets,guardar_red,output_net,cargar_red,red_a_utilizar, testear_resultados,testing):
-    red_hebbs = Red_hebbs(inputs,3,'oja')
+def correr_hebbs(train_set,targets,guardar_red,output_net,cargar_red,red_a_utilizar,testing_set,testear_en_test_set=True,testear_en_train_set=True):
+    red_hebbs = Red_hebbs(train_set[0],3,'oja')
     if cargar_red:
         red_hebbs.load_net(red_a_utilizar)
     else:
         red_hebbs.entrenar(0.001)
     if guardar_red:
-        red_hebbs.save_net(output_net)    
-    red_hebbs.testear(inputs,targets)
+        red_hebbs.save_net(output_net)
+    if testear_en_test_set:
+    	red_hebbs.testear(testing_set[0],testing_set[1],'Testeo Sobre Datos De Testeo')
+    if testear_en_train_set:
+    	red_hebbs.testear(train_set[0],train_set[1],title='Testeo Sobre Datos De Entrenamiento')
     exit(0)
     
-def correr_mapeo(inputs,targets,guardar_red,output_net,cargar_red,red_a_utilizar, testear_resultados,testing):
-    red_mapeo = Red_mapeo_caracteristicas(inputs,40,40)
+def correr_mapeo(train_set,targets,guardar_red,output_net,cargar_red,red_a_utilizar,testing_set,testear_en_test_set=True,testear_en_train_set=True):
+    red_mapeo = Red_mapeo_caracteristicas(train_set[0],40,40)
     if cargar_red:
         red_mapeo.load_net(red_a_utilizar)
     else:
         red_mapeo.entrenar(Learning_rate_tipo_3())
     if guardar_red:
         red_mapeo.save_net(output_net)
-    red_mapeo.testear(inputs,targets)
+    if testear_en_test_set:
+    	red_hebbs.testear(testing_set[0],testing_set[1],title='Testeo Sobre Datos De Testeo')
+    if testear_en_train_set:
+    	red_hebbs.testear(train_set[0],train_set[1],title='Testeo Sobre Datos De Entrenamiento')
     exit(0)
 
 if __name__ == "__main__":
@@ -125,10 +141,12 @@ if __name__ == "__main__":
     instancia_Compania_a_perceptron_adapter = InstanciaCompania()
     inputs, targets = cargar_problema_a_aprender(datos_csv=entrenamiento,
                                                  adapter=instancia_Compania_a_perceptron_adapter)
-    print inputs
+
+    train, testing = generate_train_and_test_set(inputs,targets)
+
     if option == 1:
-        correr_hebbs(inputs, targets,guardar_red,output_net,cargar_red,red_a_utilizar, testear_resultados,testing)
+        correr_hebbs(train, targets,guardar_red,output_net,cargar_red,red_a_utilizar,testing)
     if option == 2:
-        correr_mapeo(inputs, targets,guardar_red,output_net,cargar_red,red_a_utilizar, testear_resultados,testing)
+        correr_mapeo(train, targets,guardar_red,output_net,cargar_red,red_a_utilizar,testing)
 
 
