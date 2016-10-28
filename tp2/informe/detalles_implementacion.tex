@@ -1,0 +1,21 @@
+\subsection{Detalles de ejecución}
+
+Para correr el programa simplmente debe ejecutarse:
+
+	$$\text{python main.py numero\_ejercicio}$$
+
+Donde $numero\_ejercicio$ puede ser $1,2,3$ siendo oja, sanger y kohonen respectivamente.
+
+Ademas se cuenta con distintos flags opcionales: 
+
+\begin{itemize}
+\item 	-i \quad Ruta al archivo de entrenamiento
+\item 	-o \quad Ruta al archivo donde guardar la red
+\item 	-n \quad Ruta al red a utilizar
+\item 	-t \quad Ruta al archivo contra el que testear
+\item 	-g \quad Graficar Resultados
+\end{itemize}
+
+Por default el programa buscará el archivo de entrenamiento en la carpeta raiz donde se esta ejecutando el programa, en caso de no brindarse un archivo de testing se partirá este mismo en dos partes, se entrenará con una de ellas y se testeará sobre la otra.
+
+En caso de tener habilitado un entorno grafico, el flag $-g$ mostrará en una ventana los resultados de manera visual.

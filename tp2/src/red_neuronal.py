@@ -17,6 +17,8 @@ class Red_hebbs:
         self.mode = mode
 
     def entrenar(self,learning_rate, iteraciones = 100):
+        norma_anterior = 0.0
+        norma_actual = np.linalg.norm(self.weights)
         U = np.triu(np.ones((self.cantidad_neuronas_salida,self.cantidad_neuronas_salida) ))
         for iteracion in range(iteraciones):
             for instancia in self.inputs_entrenamiento:
@@ -24,14 +26,18 @@ class Red_hebbs:
                     y = np.dot(instancia, self.weights)
                     x_raya = np.dot(y,self.weights.T)
                     delta_weights = learning_rate * y * np.array([instancia - x_raya]).T
-                elif self.mode == 'sanjer':
+                elif self.mode == 'sanger':
                     y = np.dot(instancia, self.weights)
                     x_raya = np.multiply( np.array([y]).T , U)
                     x_raya = np.dot(self.weights, x_raya)
                     delta_weights = learning_rate * (np.array([instancia]).T - x_raya) * y
                 self.weights = self.weights + delta_weights
             if (iteracion * 100) % iteraciones == 0:
-                print "Completo: ", (iteracion * 100)/iteraciones, "%"
+                norma_actual = np.linalg.norm(self.weights)
+                diferencia_norma = abs(norma_actual - norma_anterior)
+                norma_anterior = norma_actual
+                print "Cambio En La Norma:" +  str(diferencia_norma)
+                print "Completo: ", (iteracion * 100)/iteraciones, "%" 
 
     def testear(self,inputs,targets_entrenamiento, title, show_graphic=1):
         resultado = np.dot(inputs, self.weights)
@@ -44,6 +50,7 @@ class Red_hebbs:
             ax.set_ylabel('Y')
             ax.set_zlabel('Z')
             plt.title(title)
+            plt.savefig(title)
             plt.show()
 
     def save_net(self,string='red_mapeo_caracteristicas'):
@@ -67,11 +74,17 @@ class Red_mapeo_caracteristicas:
         self.array_P = np.array([[j / self.columna_mapa, np.mod(j,self.columna_mapa)] for j in range(self.fila_mapa * self.columna_mapa)])
 
     def entrenar(self, learning_rate,iteraciones = 100):
+        norma_anterior = 0.0
+        norma_actual = np.linalg.norm(self.weights)
         for i in range(iteraciones):
             for instancia in self.inputs_entrenamiento:
                 y = self.activacion(instancia)
                 self.correccion(instancia,y,i+1,learning_rate)
             if (i * 100) % iteraciones == 0:
+                norma_actual = np.linalg.norm(self.weights)
+                diferencia_norma = abs(norma_actual - norma_anterior)
+                norma_anterior = norma_actual
+                print "Cambio En La Norma:" +  str(diferencia_norma)
                 print "Completo: ", (i * 100)/iteraciones, "%" 
 
 
@@ -128,6 +141,7 @@ class Red_mapeo_caracteristicas:
             cmap = matplotlib.cm.jet
             cmap.set_bad('black',1.)
             plt.matshow(grafico,cmap=cmap)
+            plt.savefig(title)
             plt.show()
 
     def save_net(self,string='red_mapeo_caracteristicas'):
