@@ -1,4 +1,10 @@
 \select@language {spanish}
 \contentsline {section}{\numberline {1}Introduccion}{2}{section.1}
 \contentsline {section}{\numberline {2}Desarrollo}{2}{section.2}
-\contentsline {section}{\numberline {3}Concluciones}{2}{section.3}
+\contentsline {subsection}{\numberline {2.1}PCA}{2}{subsection.2.1}
+\contentsline {subsubsection}{\numberline {2.1.1}Implementaci\IeC {\'o}n}{2}{subsubsection.2.1.1}
+\contentsline {subsubsection}{\numberline {2.1.2}Experimentaci\IeC {\'o}n}{2}{subsubsection.2.1.2}
+\contentsline {subsection}{\numberline {2.2}Mapeo de Caracter\IeC {\'\i }sticas}{3}{subsection.2.2}
+\contentsline {section}{\numberline {3}Detalles De ejecuci\IeC {\'o}n}{4}{section.3}
+\contentsline {subsection}{\numberline {3.1}Detalles de ejecuci\IeC {\'o}n}{4}{subsection.3.1}
+\contentsline {section}{\numberline {4}Concluciones}{5}{section.4}
