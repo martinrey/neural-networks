@@ -36,6 +36,97 @@ Utilizando el paquete numpy de python es posible traducir este codigo de manera 
 
 Para la experimentación entrenamos la red con parte del set de datos que nos fue entregado
 
+\begin{figure}[h!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{convergencia_oja/entrenamiento_0.png}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{convergencia_oja/entrenamiento_25.png}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{convergencia_oja/entrenamiento_50.png}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{convergencia_oja/entrenamiento_75.png}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=.5\linewidth]{convergencia_oja/entrenamiento_100.png}
+	\captionof{figure}{A figure}
+	\label{fig:test1}
+	\centering
+\end{figure}
+
+\pagebreak
+Sanger
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{convergencia_sanger/entrenamiento_0.png}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{convergencia_sanger/entrenamiento_25.png}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{convergencia_sanger/entrenamiento_50.png}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{convergencia_sanger/entrenamiento_75.png}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=.5\linewidth]{convergencia_sanger/entrenamiento_100.png}
+	\captionof{figure}{A figure}
+	\label{fig:test1}
+	\centering
+\end{figure}
+
 %Neural Networks Haykin
 % In Chatterjee et al. (1998), the convergence properties of the GHA algorithm
 % described in Eq. (8.91) are investigated. The analysis presented therein shows that
@@ -44,6 +135,43 @@ Para la experimentación entrenamos la red con parte del set de datos que nos fu
 % and speed of learning is made explicit.
 
 
+
 \subsection{Mapeo de Características}
 
 En este apartado construiremos un modelo de mapeo de caracteristicas auto-organizado con la intención de clasificar los documentos en un arreglo de dos dimenciones. Para ello utilizaremos el algoritmo de Kohonen sobre los datos de entrenamiento y una vez que la red haya convergido, graficaremos los las respuestas obtenidas en el plano.
+
+Convergencia Kohonen
+
+\begin{figure}[h!]
+\centering
+\begin{minipage}{.15\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{convergencia_kohonen/entrenamiento_0.png}
+  \captionof{figure}{0\%}
+  \label{fig:test1}
+\end{minipage}%
+\begin{minipage}{.15\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{convergencia_kohonen/entrenamiento_25.png}
+  \captionof{figure}{25\%}
+  \label{fig:test2}
+\end{minipage}
+\begin{minipage}{.15\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{convergencia_kohonen/entrenamiento_50.png}
+  \captionof{figure}{50\%}
+  \label{fig:test2}
+\end{minipage}
+\begin{minipage}{.15\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{convergencia_kohonen/entrenamiento_75.png}
+  \captionof{figure}{75\%}
+  \label{fig:test2}
+\end{minipage}
+\begin{minipage}{.15\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{convergencia_kohonen/entrenamiento_100.png}
+  \captionof{figure}{100\%}
+  \label{fig:test2}
+\end{minipage}
+\end{figure}
