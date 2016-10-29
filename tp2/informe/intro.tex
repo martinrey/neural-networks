@@ -7,11 +7,12 @@ Un problema comun en reconocimiento de patrones es la de seleccionar atributos. 
 SOM:
 Es un tipo de aprendizaje no supervisado de tipo competitivo. Que queremos decir con esto? Tenemos un conjunto de neuronas de salida organizadas en una grilla de 2 dimensiones (tambien conocido como "lattice"), dichas neuronas "compiten" entre ellas para ser activadas. Pero solo una de ellas sera la que disparará (también podemos generalizarlo a grupos de neuronas, y que disparara solamente una neurona de cada grupo). Las neuronas que se activan (aquellas que ganan la competencia) las llamaremos neuronas ganadoras. Bajo esta visión lo que nosotros haremos es conocido en la literatura como winner-takes-all. Estas neuronas son inducidas a distintos estimulos (o patrones de distintas clases) para que se establezca un orden entre neuronas ganadoras. Es decir, lo que trataremos de hacer es que bajo patrones similares, vamos a querer que se activen neuronas que sean cercanas entre ellas bajo alguna metrica. En nuestra grilla podemos tomar como metrica la distancia euclediana y lo que vamos a querer respetar es que bajo un conjunto de inputs que sean muy distintos, activaciones de neuronas que esten alejadas, produciendo en nuestro mapa de neuronas "clusters" o grupos bien diferenciados de neuronas en estado exitatorio. Es decir, preservamos una topologia, a entradas de distintas clases le corresponden neuronas de distintos grupos, y cuanto mas disimilares sean estas entradas, mas lejanas seran las neuronas activadas. La motivacion de esto fue que por ejemplo, el sistema tactil (Kaas et cl., 1983), visual (Hubel and Wiesel, 1962, 1977) y acustico (Suga, 1985) son "mapeados" a diferentes areas en la corteza cerebral respetando un orden topologico.
 Los mapas computacionales ofrecen cuatro propiedades importantes (Knudsen et a., 1987; Durbin and Michison, 1990).
-1. En cada mapa, la neuronas actuan en paralelo y procesan pedazos de informacion que son similares en su naturaleza, pero proceden de diferentes reginoes en el espacio de entrada sensorial.
-2. En cada etapa de la representación, cada pieza de entrada de información se mantiene en su contexto.
-3. Las neuronas que tratan con inputs cercanos (parecidos) son cercanas entre ellas por lo que interactuan a travez de conexiones sinapticas cortas.
-4. Los mapas contextuales pueden ser entendidos en terminos de mapas de reduccion de una dimension alta.
-
+\begin{enumerate}
+\item En cada mapa, la neuronas actuan en paralelo y procesan pedazos de informacion que son similares en su naturaleza, pero proceden de diferentes reginoes en el espacio de entrada sensorial.
+\item En cada etapa de la representación, cada pieza de entrada de información se mantiene en su contexto.
+\item Las neuronas que tratan con inputs cercanos (parecidos) son cercanas entre ellas por lo que interactuan a travez de conexiones sinapticas cortas.
+\item Los mapas contextuales pueden ser entendidos en terminos de mapas de reduccion de una dimension alta.
+\end{enumerate}
 Hay dos modelos implementativos para este tipo de mapas. Uno es el de Willshaw-von der Malsburg y el segundo el de Kohonen. En particular nos especializaremos en el segundo pero vamos a dar una breve reseña de cada uno.
 
 El primero lo que hace es que tanto la entrada como la salida tienen la misma dimension. Es decir que si estamos usando un mapa de 2 dimensiones como salida, vamos a tratar la entrada como una grilla de neuronas de 2 dimensiones. Para entenderlo mejor, a continuacion un grafico.
