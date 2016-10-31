@@ -1,13 +1,14 @@
 \select@language {spanish}
 \contentsline {section}{\numberline {1}Introduccion}{3}{section.1}
-\contentsline {section}{\numberline {2}Desarrollo}{4}{section.2}
-\contentsline {subsection}{\numberline {2.1}PCA}{4}{subsection.2.1}
-\contentsline {subsubsection}{\numberline {2.1.1}Implementaci\IeC {\'o}n}{4}{subsubsection.2.1.1}
-\contentsline {subsubsection}{\numberline {2.1.2}Experimentaci\IeC {\'o}n}{5}{subsubsection.2.1.2}
-\contentsline {subsubsection}{\numberline {2.1.3}Sanger}{5}{subsubsection.2.1.3}
-\contentsline {subsection}{\numberline {2.2}Sanger}{8}{subsection.2.2}
-\contentsline {subsection}{\numberline {2.3}Mapeo de Caracter\IeC {\'\i }sticas}{9}{subsection.2.3}
-\contentsline {subsubsection}{\numberline {2.3.1}Implementaci\IeC {\'o}n}{9}{subsubsection.2.3.1}
-\contentsline {section}{\numberline {3}Detalles De ejecuci\IeC {\'o}n}{9}{section.3}
-\contentsline {subsection}{\numberline {3.1}Detalles de ejecuci\IeC {\'o}n}{9}{subsection.3.1}
-\contentsline {section}{\numberline {4}Concluciones}{10}{section.4}
+\contentsline {section}{\numberline {2}Desarrollo}{5}{section.2}
+\contentsline {subsection}{\numberline {2.1}PCA}{5}{subsection.2.1}
+\contentsline {subsubsection}{\numberline {2.1.1}Implementaci\IeC {\'o}n}{6}{subsubsection.2.1.1}
+\contentsline {subsubsection}{\numberline {2.1.2}Experimentaci\IeC {\'o}n}{6}{subsubsection.2.1.2}
+\contentsline {subsubsection}{\numberline {2.1.3}Sanger}{6}{subsubsection.2.1.3}
+\contentsline {subsection}{\numberline {2.2}Sanger}{9}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Mapeo de Caracter\IeC {\'\i }sticas}{10}{subsection.2.3}
+\contentsline {subsubsection}{\numberline {2.3.1}Implementaci\IeC {\'o}n}{10}{subsubsection.2.3.1}
+\contentsline {subsubsection}{\numberline {2.3.2}Convergencia Kohonen}{10}{subsubsection.2.3.2}
+\contentsline {section}{\numberline {3}Detalles De ejecuci\IeC {\'o}n}{10}{section.3}
+\contentsline {subsection}{\numberline {3.1}Detalles de ejecuci\IeC {\'o}n}{10}{subsection.3.1}
+\contentsline {section}{\numberline {4}Concluciones}{11}{section.4}
