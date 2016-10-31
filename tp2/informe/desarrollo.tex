@@ -288,3 +288,61 @@ Abajo mostramos la convergencia a priori del algoritmo:
 \end{figure}
 
 Aqui puede verse de manera bastante clara como se van organizando las diferentes categorías.
+
+\subsubsection{Overfitting en el algoritmo de Kohonen}
+
+En este apartado buscamos sacar concluciones sobre posibles overfittings que se puedan realizar sobre los datos a la hora de entrenar un modelo usando kohonen.
+
+Para ello dividimos el training set dado por la catedra en un conjunto uno de entrenamiento y uno de testeo. Luego de entrenar los datos, se obtuvieron estos resultados en ambos sets de datos:
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{testeo_test_kohen/entrenamiento.png}
+  \caption{Instancias De Entrenamiento}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{testeo_test_kohen/test.png}
+  \caption{Instancias De Test}
+  \label{fig:sub2}
+\end{subfigure}
+\label{fig:test}
+\end{figure}
+
+Como puede verse, los datos presentan ciertas dissimilitudes, por ejemplo en el cuadrante $(3,3)$ en el train set se lo clasifico como que pertenecía a la categoría gris, sin embargo al momento de testeo se clasificó como que pertenecía a la categoría naranja. Esto podría estar causado por dos motivos:
+
+\begin{itemize}
+\item Los datos presentan ruido, que producen que las clasificaciones no sean perfectas
+\item O bien, el modelo esta sobreajustando, y memorizando los resultados en vez de generalizar, generando asi respuestas erroneas.
+\end{itemize}
+
+Como prueba adicional a realizar, entrenamos el modelo utilizando otras funciones de learning rate para ver como se comporta en estos casos el overfitting y si es posible mitigarlo de esta manera. Dejando todos los otros parametros constantes, utilizamos:
+
+$$learning\_rate(epocas) = learning\_rate\_inicial * (1 + epocas * learning\_rate\_proporcional) ** -(\alpha)$$
+
+con $learning_rate_inicial=0.7$  y $learning_rate_proporcional=0.5$.
+
+Los resultados fueron los siguientes:
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{testeo_test_kohen2/entrenamiento.png}
+  \caption{Instancias De Entrenamiento}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{testeo_test_kohen2/test.png}
+  \caption{Instancias De Test}
+  \label{fig:sub2}
+\end{subfigure}
+  \caption{Instancias De Test}
+\label{fig:test}
+\end{figure}
+
+En este caso puede verse un ordenamiento mucho mas fuerte presentando en cada lateral de la figura una categoría diferente. Aun así continua habiendo cuadrantes clasificados de una manera en el set de entrenamiento y de otra en el set de datos. Consideramos sin embargo que estos no son tan grabes como los anteriores y son simplemente casos borde, ninguna instancia parece haber sido clasificada tan lejos de su color en la imagen de entrenamiento.
