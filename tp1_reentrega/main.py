@@ -3,6 +3,8 @@ from adapters import InstanciaCancerAPerceptronAdapter, InstanciaCargaEnergetica
 import numpy as np
 import perceptron_multicapa
 from funcion import SigmoideaLogistica, Identidad
+import sys, getopt
+
 
 def normalizar(instancias):
     cantidad_de_instancias = len(instancias)
@@ -38,27 +40,116 @@ def split(inputs, valor):
     return inputs[:int(proporcion)], inputs[int(proporcion):]
 
 
+# if __name__ == "__main__":
+#     instancia_cancer_a_perceptron_adapter = InstanciaCancerAPerceptronAdapter()
+#     inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej1_training.csv',
+#                                                  adapter=instancia_cancer_a_perceptron_adapter)
+#     # for i in range(40):
+#     #     funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),SigmoideaLogistica(1)]
+#     #     inputs_test, inputs_entrenamiento = split(inputs, 1.0/4 )
+#     #     targets_test, targets_entrenamiento = split(targets, 1.0/4 )
+#     #     q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 7,funciones)
+#     #     q.entrenar( 0.02, 3500, "logistica", verbose=0)
+#     #     q.matriz_de_confusion(inputs_test, targets_test)
+
+
+#     instancia_carga_energetica_a_perceptron_adapter = InstanciaCargaEnergeticaAPerceptronAdapter()
+#     inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej2_training.csv',
+#                                                      adapter=instancia_carga_energetica_a_perceptron_adapter)
+#     inputs_test, inputs_entrenamiento = split(inputs, 1.0/3 )
+#     targets_test, targets_entrenamiento = split(targets, 1.0/3 )
+#     for i in range(25):
+#         funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),Identidad()]
+#         q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 30,funciones)
+#         q.entrenar(0.02, 50001, "lineal", verbose=1)
+#         q.comparar_resultdos(inputs_test, targets_test,"lineal")
+
+def print_flags():
+    print 'python main.py numero_ejercicio'
+    print "-i <inputfile> \t\t archivo de entrenamiento"
+    print "-o <outputfile> \t Archivo donde guardar red"
+    print "-n <net> \t\t Red a utilizar"
+    print "-t <testing> \t\t Archivo contra el que testear"
+    print "-g \t\t Graficar Resultados"
+
 if __name__ == "__main__":
-    instancia_cancer_a_perceptron_adapter = InstanciaCancerAPerceptronAdapter()
-    inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej1_training.csv',
-                                                 adapter=instancia_cancer_a_perceptron_adapter)
-    # for i in range(40):
-    #     funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),SigmoideaLogistica(1)]
-    #     inputs_test, inputs_entrenamiento = split(inputs, 1.0/4 )
-    #     targets_test, targets_entrenamiento = split(targets, 1.0/4 )
-    #     q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 7,funciones)
-    #     q.entrenar( 0.02, 3500, "logistica", verbose=0)
-    #     q.matriz_de_confusion(inputs_test, targets_test)
+    uso_input = False
+    guardar_red = False
+    cargar_red = False
+    testear_resultados = False
+    entrenamiento ='tp2_training_dataset.csv'
+    output_net=''
+    red_a_utilizar=''
+    testing = ''
+    graficar_resultados = False
+    testear_en_test_set = True
+    testear_en_train_set = True
 
+    if(len(sys.argv) <= 1):
+        print_flags()
+        sys.exit()
+    argv = sys.argv[2:]
+    option = int(sys.argv[1])
+    try:
+        opts, args = getopt.getopt(argv,"hi:o:n:t:g",["ifile=","ofile="])
+    except getopt.GetoptError:
+        print_flags()
+        sys.exit()
+    for opt, arg in opts:
+        if opt == '-h':
+            print_flags()
+            sys.exit()
+        elif opt in ("-i", "--inputfile"):
+            uso_input = True
+            entrenamiento = arg
+        elif opt in ("-o", "--outputfile"):
+            guardar_red = True
+            output_net = arg
+        elif opt in ("-n", "--net"):
+            cargar_red = True
+            red_a_utilizar = arg
+        elif opt in ("-t", "--testing"):
+            testear_resultados = True
+            testing = arg
+        elif opt in ("-g", "--graphix"):
+            graficar_resultados = True
 
-    instancia_carga_energetica_a_perceptron_adapter = InstanciaCargaEnergeticaAPerceptronAdapter()
-    inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej2_training.csv',
-                                                     adapter=instancia_carga_energetica_a_perceptron_adapter)
-    inputs_test, inputs_entrenamiento = split(inputs, 1.0/3 )
-    targets_test, targets_entrenamiento = split(targets, 1.0/3 )
-    for i in range(25):
+    if option == 1:
+        instancia_cancer_a_perceptron_adapter = InstanciaCancerAPerceptronAdapter()
+        inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej1_training.csv',adapter=instancia_cancer_a_perceptron_adapter)
+        funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),SigmoideaLogistica(1)]
+        inputs_test, inputs_entrenamiento = split(inputs, 1.0/4 )
+        targets_test, targets_entrenamiento = split(targets, 1.0/4 )
+        red_neuronal = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 7,funciones)
+        learning_rate = 0.02
+        cantidad_iteraciones = 3500
+        tipo_func = "logistica"
+
+    if option == 2:
+        instancia_carga_energetica_a_perceptron_adapter = InstanciaCargaEnergeticaAPerceptronAdapter()
+        inputs, targets = cargar_problema_a_aprender(datos_csv='tp1_ej2_training.csv',adapter=instancia_carga_energetica_a_perceptron_adapter)
+        inputs_test, inputs_entrenamiento = split(inputs, 1.0/3 )
+        targets_test, targets_entrenamiento = split(targets, 1.0/3 )
         funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),Identidad()]
-        q = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 30,funciones)
-        q.entrenar(0.02, 50001, "lineal", verbose=1)
-        q.comparar_resultdos(inputs_test, targets_test,"lineal")
+        red_neuronal = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 30,funciones)
+        learning_rate = 0.02
+        cantidad_iteraciones = 50001
+        tipo_func = "lineal"
 
+    if cargar_red:
+        red_neuronal.load_net(red_a_utilizar)
+    else:
+        red_neuronal.entrenar(learning_rate, cantidad_iteraciones, tipo_func, verbose=1)
+    if guardar_red:
+        red_neuronal.save_net(output_net)
+    if testear_en_test_set:
+        if option == 1:
+            red_neuronal.matriz_de_confusion(inputs_test, targets_test)
+        if option == 2:
+            red_neuronal.comparar_resultdos(inputs_test, targets_test,"lineal")
+    if testear_en_train_set:
+        if option == 1:
+            red_neuronal.matriz_de_confusion(inputs_test, targets_test)
+        if option == 2:
+            red_neuronal.comparar_resultdos(inputs_entrenamiento, targets_entrenamiento,"lineal")
+    exit(0)
