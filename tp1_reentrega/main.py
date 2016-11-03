@@ -4,6 +4,7 @@ import numpy as np
 import perceptron_multicapa
 from funcion import SigmoideaLogistica, Identidad
 import sys, getopt
+import random
 
 
 def normalizar(instancias):
@@ -31,6 +32,11 @@ def cargar_problema_a_aprender(datos_csv, adapter):
         conjunto_de_instancias_vectorizadas.append(instancia_vectorizada)
         clasificaciones.append(clasificacion)
     conjunto_de_instancias_vectorizadas_normalizadas = normalizar(conjunto_de_instancias_vectorizadas)
+
+    random.seed(10)
+    combined = list(zip(conjunto_de_instancias_vectorizadas_normalizadas, clasificaciones))
+    random.shuffle(combined)
+    conjunto_de_instancias_vectorizadas_normalizadas[:], clasificaciones[:] = zip(*combined)
 
     return parsear_a_mlp(conjunto_de_instancias_vectorizadas_normalizadas, clasificaciones)
 
@@ -74,6 +80,8 @@ def print_flags():
     print "-e \t\t Cantidad de Epocas"
     print "-s \t\t Silent"
     print "-l \t\t learning rate"
+    print "-t \t\t Testear en training set"
+
 
 
 
@@ -89,7 +97,7 @@ if __name__ == "__main__":
     testing = ''
     graficar_resultados = False
     testear_en_test_set = True
-    testear_en_train_set = True
+    testear_en_train_set = False
     default_epocas = True
     default_learning_rate = True
     silent = False
@@ -100,7 +108,7 @@ if __name__ == "__main__":
     argv = sys.argv[2:]
     option = int(sys.argv[1])
     try:
-        opts, args = getopt.getopt(argv,"hi:o:n:t:e:gsl:",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:o:n:t:e:gsl:w",["ifile=","ofile="])
     except getopt.GetoptError:
         print_flags()
         sys.exit()
@@ -130,6 +138,9 @@ if __name__ == "__main__":
         elif opt in ("-l", "--silent"):
             default_learning_rate = False
             learning_rate = float(arg)
+        elif opt in ("-w", "--training"):
+                testear_en_test_set = False
+                testear_en_train_set = True
 
     if option == 1:
         instancia_cancer_a_perceptron_adapter = InstanciaCancerAPerceptronAdapter()
@@ -172,7 +183,7 @@ if __name__ == "__main__":
             red_neuronal.comparar_resultdos(inputs_test, targets_test,"lineal")
     if testear_en_train_set:
         if option == 1:
-            red_neuronal.matriz_de_confusion(inputs_test, targets_test)
+            red_neuronal.matriz_de_confusion(inputs_entrenamiento, targets_entrenamiento)
         if option == 2:
             red_neuronal.comparar_resultdos(inputs_entrenamiento, targets_entrenamiento,"lineal")
     exit(0)

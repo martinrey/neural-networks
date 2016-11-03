@@ -63,9 +63,9 @@ class PerceptronMulticapa:
             for j in range(nclasses):
                 cm[i, j] = np.sum(np.where(outputs == i, 1, 0) * np.where(targets == j, 1, 0))
 
-        print "Confusion matrix is:"
-        print cm
-        print "Percentage Correct: ", np.trace(cm) / np.sum(cm) * 100
+        #print "Confusion matrix is:"
+        print cm[0,0],cm[0,1],cm[1,0],cm[1,1]
+        #print "Percentage Correct: ", np.trace(cm) / np.sum(cm) * 100
 
     def comparar_resultdos(self,inputs, targets,tipo_funcion):
         outputs = self.forwarding(inputs, tipo_funcion)

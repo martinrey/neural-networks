@@ -1,0 +1,1 @@
+python main.py 2 -l .02 -e 100000 > res
