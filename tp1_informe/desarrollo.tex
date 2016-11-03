@@ -8,7 +8,6 @@ El algoritmo que implementamos consistió en una red neuronal profunda con retro
 A fin de tener una medida de como va \"aprendiendo\" la red neuronal, luego de presentarle a la red todas las instancias una vez, calculamos la norma de la diferencia entre las respuestas obtenidas y las esperadas. Consideraremos esta nuestra "norma del error" y la tomaremos como una metrica adecuada para saber cuan buenos resultados devuelve nuestra red.
 
 %habria que poner pseudocodigo o algo mas lindo acá
-%Aprovechando este calculo de la norma, decidimos agregar a la implementación, un learning rate adaptativo. El mismo consiste en, en caso de que la norma haya decrecido, aumentar el learnin rate. En caso contrario, es decir, la norma del error aumentó, quiere decir que la red empeoro la solucion y decrecemos el learnig rate.
 
 %falta explicar un poco mejor las funciones de activacion que usamos, etc
 
@@ -18,9 +17,11 @@ Como optimización adicional se agrego un termino de momentum. La idea tras esto
 
 \subsubsection{Convergencia del algoritmo} 
 
+%decir que usamos logistica porque es una clasificacion idem l.12
+
 Para este problema utilizaremos una neurona en la ulima capa con función de activación logistica. Para ser consistentes con esto, las salidas esperadas adoptarán los valores $1$ si resulto ser cancer maligno, y $0$ si resulto ser benigno. La experimentación consistirá en buscar los parametros optimos que nos den la mayor tasa de aciertos para nuestro data set.
 
-Como primera instancia comprobaremos que la red converge efectivamente a la solución esperada. Para eso tomamos un lerning rate de $0.01$ y con $1300$ epocas graficamos la norma del error cada $1000$ iteraciones:
+Como primera instancia comprobaremos que la red converge efectivamente a la solución esperada. Para eso tomamos un lerning rate de $0.01$, $7$ neuronas en la capa oculta y con $1300$ epocas graficamos la norma del error cada $1000$ iteraciones:
 
 \begin{figure}[h!]
   \centering
@@ -37,6 +38,7 @@ Para evitar el sobreajuste las experimentaciones todas las experimentaciones des
 Ademas, para visualizar los resultados mas claramente utilizaremos una matriz de confución, que nos permitirá dicernir entre falsos positivos (fp), falsos negativos(fn) y instancias clasificadas correctamente (tp y tn).
 
 \reescribir 
+%cantidad de neuronas!
 
 En esta sección querremos experimentar es como se comporta el algoritmo al variar el learning rate. Para ello, dejamos constantes las cantidad de epocas de entrenamiento en $10000$ y variamos el learning desde $0.01$ hasta $0.2$ aumentando de a $0.01$
 
@@ -63,9 +65,31 @@ Para una cantidad menor a $600$ iteraciones puede observarse que la red neuronal
 
 %explicar modificacion?
 
-De igual manera realizamos la misma experimentación para este problema de regreción lineal. Como primera instancia queremos ver si el algoritmo converge adecuadamente para este problema.
+Este problema presenta ciertas diferencias con respecto al anterior. En particular en este caso querremos hacer una regreción lineal sobre los datos. Por lo tanto, elegimos una función de activación lineal en la ultima capa. Ademas para cada conjunto de atributos se deverán volver dos resultados diferentes, por lo que la ultima capa tendrá dos neuronas de salida.
+
+\subsubsection{Convergencia del algoritmo}
+
+De igual manera que para el caso del cancer de mama, lo primero que querremos determinar es que el algoritmo comberge a la solución deseada. Por lo que nuevamente tomamos un lerning rate de $0.01$, $30$ neuronas en la capa oculta y con $100000$ epocas graficamos la norma del error cada $1000$ iteraciones:
+
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[scale=0.4]{ej1_convergencia/1.png}
+    \includegraphics[scale=0.4]{ej2_convergencia/1.png}
 \end{figure}
+
+A simple vista se puede notar que en este caso el algritmo converge de manera mucho mas lenta (notar que el grafico se encuentra en escala logaritmica).
+
+\conclucion
+
+\subsubsection{Performance Vs Learning Rate}
+
+En esta sección esperamos determinar un learning rate adecuado para nuestro algoritmo. A priori pareciera que $0.01$ resulta muy bajo para este caso, resultando en una convergencia muy lenta. Para este experimento dejamos la cantidad de epocas fija en $10000$, la cantidad de neuronas de la capa oculta en $30$ y variamos el learning rate desde $0.01$ a $0.2$ con un step de $0.01$. Los resultados obtenidos fueron:
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[scale=0.4]{ej2_test_learning_rate/1.png}
+\end{figure}
+
+Como puede verse, en este caso un learning rate mayor aumenta considerablemente la convergencia del algoritmo.
+
+%TODO: implementar y experimentar cambiando la cantidad de neuronas del algortimo.
