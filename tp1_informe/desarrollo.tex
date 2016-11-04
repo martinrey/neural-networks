@@ -1,11 +1,11 @@
 \subsection{Preprocesamiento De Los Datos} 
-Con el objetivo de darle mayor estabilidad matematica a los datos y quitar algo del ruido que puedan tener, realizamos un preprocesamiento de los mismos. El mismo consistió en quitar los utliers dentro del set de datos y luego normalizarlos con media 0 y varianza 1.
+Con el objetivo de darle mayor estabilidad matematica a los datos y quitar algo del ruido que puedan tener, realizamos un preprocesamiento de los mismos. El mismo consistió en quitar los utliers dentro del set de datos y luego normalizarlos con media $0$ y varianza $1$.
 
 \subsection{Implementacion Del algoritmo} 
 
 El algoritmo que implementamos consistió en una red neuronal profunda con retropropagación del error. Este, descripto de manera informal consiste en introducir una instancia del problema, calcular la salida, compararla con la salida esperada y retropropagar el error, con el objetivo modificar las matrices de pesos y minimizar la diferencia. El sistema implementado se dice ser $online$ ya que los pesos de las matrices son ajutados luego de retropropagar el error de cada instancia en vez de hacerlo al final de la epoca.
 
-A fin de tener una medida de como va \"aprendiendo\" la red neuronal, luego de presentarle a la red todas las instancias una vez, calculamos la norma de la diferencia entre las respuestas obtenidas y las esperadas. Consideraremos esta nuestra "norma del error" y la tomaremos como una metrica adecuada para saber cuan buenos resultados devuelve nuestra red.
+A fin de tener una medida de como va "aprendiendo" la red neuronal, luego de presentarle a la red todas las instancias una vez, calculamos la norma de la diferencia entre las respuestas obtenidas y las esperadas. Consideraremos esta nuestra "norma del error" y la tomaremos como una metrica adecuada para saber cuan buenos resultados devuelve nuestra red.
 
 %habria que poner pseudocodigo o algo mas lindo acá
 
@@ -25,10 +25,12 @@ Como primera instancia comprobaremos que la red converge efectivamente a la solu
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[scale=0.4]{ej1_convergencia/1.png}
+    \includegraphics[scale=0.4]{ej1/convergencia.png}
 \end{figure}
 
 El grafico muestra que, efectivamente, nuestro algoritmo minimiza la diferencia entre las soluciones obtenidas y las deseadas, minimizando así tambien la norma del error.
+
+En las secciones subsiguientes, realizaremos diferentes experimentaciones sobre los hiperparametros del algoritmo para intentar aproximar a la solcución ideal.
 
 \subsubsection{Performance Vs Learning Rate} 
 
@@ -44,10 +46,27 @@ En esta sección querremos experimentar es como se comporta el algoritmo al vari
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=0.4]{ej1_test_learning_rate/1.png}
+\includegraphics[scale=0.4]{ej1/test_learning_rate.png}
 \end{figure}
 
 El grafico muestra varios resultados interesantes. En el rango $[0.01,0.11]$ puede verse que la red arroja buenos resultados, obteniendo en general un $90\%$ de clasificaciones corrrectas. Pasado ese rango puede verse como los falsos positivos y los falsos negativos sufren un incremento muy significativo, llegando al final a casi un $50\%$ de clasificaiones incorrectas. Consideramos que para estos casos la red neuronal divergió, posiblemente debido a que multiplicar el gradiente por un valor muy grande lleva a "pasarnos" del minimo y por lo tanto reduciendo la precición del algoritmo. \completar
+
+A partir de esta experimentación, para los siguientes experimentos decidimos tomar un learning rate igual a $0.02$. Concideramos que uno mayor puede producir que el altritmo diverga, mientras que uno mas pequeño hará que tarde demasiado en alcanzar la solución final.
+
+\subsubsection{Performance Vs Cantidad De Neuronas} 
+
+Otro experimento interesante para realizar es ver como cambia la calidad de los resultados dependiendo de la cantidad de neuronas en la red. Para probar esto mantenemos la cantidad de iteraciones y el learning rate fijos en $1000$ y $0.02$ respectivamente y variamos la cantidad de neuronas desde $1$ a $20$.
+
+Los resultados obtenidos se grafican en el siguiente grafico:
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.4]{ej1/test_neuronas.png}
+\end{figure}
+
+Como puede observarse, una cantidad de neuronas muy pequeña reduce considerablemente la calidad de los resultados. Esto puede deberse a \completar
+
+En este caso decidimos utilizar una cantidad de neuronas igual a $3$. \porque
 
 \subsubsection{Performance Vs Cantidad De iteraciónes} 
 
@@ -55,11 +74,12 @@ Como siguiete paso buscaremos analizar el comportamiento de la red para distinta
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[scale=0.4]{ej1_test_iter/1.png}
+    \includegraphics[scale=0.4]{ej1/test_iter.png}
 \end{figure}
 
 Para una cantidad menor a $600$ iteraciones puede observarse que la red neuronal tiene una performance mala obteniendo un porcentaje de falsos negativos y falsos positivos cercano al $50\%$. Ya con $700$ iteraciones en adelante la performance del algoritmo mejora drasticamente, rondando el porcentaje de falsos negativos y falsos positivos al rededor de $10 \%$ y $20\%$. Para $2000$ y $2100$ iteraciones obtenemos un $7\%$  de falsos negativos.
 
+Decidimos que la mejor cantidad de iteraciones en este caso será de $900$. El motivo de esta elección recide en lo antes expuesto, una cantidad menor produce que el algoritmo todavía no converga a la solción ideal, mietras que una cantidad mayor, si bien parece aumentar la precición de la solución, tambien podría deberse al overfitting de los datos.
 
 \subsection{Eficiencia energética} 
 
@@ -74,12 +94,12 @@ De igual manera que para el caso del cancer de mama, lo primero que querremos de
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[scale=0.4]{ej2_convergencia/1.png}
+    \includegraphics[scale=0.4]{ej2/convergencia.png}
 \end{figure}
 
 A simple vista se puede notar que en este caso el algritmo converge de manera mucho mas lenta (notar que el grafico se encuentra en escala logaritmica).
 
-\conclucion
+Podemos observar que el algoritmo efectivamente converge a la solución deseada. Nuestro siguiente objetivo será ajustar los parametros de manera adecuada para intentar que la solución devuelta por el algoritmo sea lo mas aproximada a la solución real.
 
 \subsubsection{Performance Vs Learning Rate}
 
@@ -87,9 +107,39 @@ En esta sección esperamos determinar un learning rate adecuado para nuestro alg
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[scale=0.4]{ej2_test_learning_rate/1.png}
+    \includegraphics[scale=0.4]{ej2/test_learning_rate.png}
 \end{figure}
 
 Como puede verse, en este caso un learning rate mayor aumenta considerablemente la convergencia del algoritmo.
 
-%TODO: implementar y experimentar cambiando la cantidad de neuronas del algortimo.
+Por este motivo, elejimos como nuestro learning rate optimo el de $0.05$. Concideramos que un learning rate excesivo, si bien puede reducir la norma del error a niveles mayores, puede producir que el algoritmo no generalice las soluciones y simplemente memorice las instancias de entrenamiento.
+
+\subsubsection{Cantidad De neuronas Vs Performance}
+
+Al igual que en el caso del cancer, queremos ver como afecta la cantidad de neuronas a los resultados. Para ello nos basamos en el experimento anterior para obtener un learning rate que concideramos aceptable, dejamos la cantidad de iteraciones en $10000$ y variamos la cantidad de neuronas desde $1$ a $20$.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[scale=0.4]{ej2/test_neuronas.png}
+\end{figure}
+
+En el grafico puede observarse que para una cantidad muy pequeña de neuronas, los resultados resultan mucho peores. Aumentando la cantidad de neuronas a $3$ ya la norma del error mejora sustancialmente, mientras que para una cantidad mayor de neuronas el algoritmo parece alcanzar una meceta.
+
+Por este motivo concideramos que para este caso la cantidad optima de neuronas es $8$.
+
+%hablar sobre el overfitting si usamos parametros mayores o algo asi.
+
+\subsubsection{Epocas Vs Performance}
+
+Como experimento final para esta sección buscaremos encontrar cual es la cantidad optima de iteraciones para este algoritmo. Para ello utilizaremos los parametros que concideramos mejores en la experimentación anterior (cantidad de neuronas = 8 y learning rate = 0.02) y variamos la cantidad de epocas desde $2000$ hasta $21000$:
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[scale=0.4]{ej2/test_iteraciones.png}
+\end{figure}
+
+Para $2000$ a $4000$ epocas, es correcto asumir que el algoritmo todavía no había convergido a una solución, encontrandose la norma del error en el orden de los $1000$. Desde las $5000$ iteraciones en adelante puede verse que el error cae repentinamente y se estabiliza en aproximadamente $200$.  
+
+Por este motivo concideramos tomar para este caso una cantidad de epocas igual a $7000$.
+
+%TODO: concluciones de cada apartado
