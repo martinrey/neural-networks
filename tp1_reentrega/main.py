@@ -81,9 +81,8 @@ def print_flags():
     print "-s \t\t Silent"
     print "-l \t\t learning rate"
     print "-t \t\t Testear en training set"
-
-
-
+    print "-c \t\t Cantidad De Neuronas"
+    print "-w \t\t Testear En datos de Entrenamiento (deshabilita testeo en datos de testeo)"
 
 
 if __name__ == "__main__":
@@ -101,6 +100,7 @@ if __name__ == "__main__":
     default_epocas = True
     default_learning_rate = True
     silent = False
+    cantidad_de_neuronas_default = True
 
     if(len(sys.argv) <= 1):
         print_flags()
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     argv = sys.argv[2:]
     option = int(sys.argv[1])
     try:
-        opts, args = getopt.getopt(argv,"hi:o:n:t:e:gsl:w",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:o:n:t:e:gsl:wc:",["ifile=","ofile="])
     except getopt.GetoptError:
         print_flags()
         sys.exit()
@@ -141,6 +141,9 @@ if __name__ == "__main__":
         elif opt in ("-w", "--training"):
                 testear_en_test_set = False
                 testear_en_train_set = True
+        elif opt in ("-c", "--training"):
+            cantidad_de_neuronas = int(arg)
+            cantidad_de_neuronas_default = False
 
     if option == 1:
         instancia_cancer_a_perceptron_adapter = InstanciaCancerAPerceptronAdapter()
@@ -148,13 +151,13 @@ if __name__ == "__main__":
         funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),SigmoideaLogistica(1)]
         inputs_test, inputs_entrenamiento = split(inputs, 1.0/4 )
         targets_test, targets_entrenamiento = split(targets, 1.0/4 )
-        red_neuronal = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 7,funciones)
         tipo_func = "logistica"
         if default_epocas:
-            cantidad_iteraciones = 3500
+            cantidad_iteraciones = 900
         if default_learning_rate:
             learning_rate = 0.02
-
+        if cantidad_de_neuronas_default:
+            cantidad_de_neuronas = 3
 
     if option == 2:
         instancia_carga_energetica_a_perceptron_adapter = InstanciaCargaEnergeticaAPerceptronAdapter()
@@ -162,14 +165,15 @@ if __name__ == "__main__":
         inputs_test, inputs_entrenamiento = split(inputs, 1.0/3 )
         targets_test, targets_entrenamiento = split(targets, 1.0/3 )
         funciones=[SigmoideaLogistica(1),SigmoideaLogistica(1),Identidad()]
-        red_neuronal = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, 30,funciones)
         if default_epocas:
-            cantidad_iteraciones = 50001
+            cantidad_iteraciones = 8000
         tipo_func = "lineal"
         if default_learning_rate:
-            learning_rate = 0.02
-
-
+            learning_rate = 0.05
+        if cantidad_de_neuronas_default:
+            cantidad_de_neuronas = 8
+    
+    red_neuronal = perceptron_multicapa.PerceptronMulticapa(inputs_entrenamiento, targets_entrenamiento, cantidad_de_neuronas,funciones)
     if cargar_red:
         red_neuronal.load_net(red_a_utilizar)
     else:
