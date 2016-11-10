@@ -1,4 +1,6 @@
-\subsection{Preprocesamiento De Los Datos} 
+\section{Procesamiento de Datos e Implementación}
+\subsection{Preprocesamiento De Los Datos}
+
 Con el objetivo de darle mayor estabilidad matemática a los datos y quitar el ruido que puedan tener, realizamos un preprocesamiento de los mismos. El mismo consistió en quitar los outliers dentro del set de datos y luego normalizarlos con media $0$ y varianza $1$.
 
 \subsection{Implementación Del algoritmo} 
@@ -72,7 +74,7 @@ Como optimización adicional se agrego un termino de momentum. La idea tras esto
 
 Para la implementación del código, utilizamos Python y la librería matemática numpy que nos facilitó la utilización de operaciones matriciales. 
 
-\subsection{Experimentación sobre datos de Diagnostico de Cáncer}
+\section{Experimentación sobre datos de Diagnostico de Cáncer}
 
 \subsubsection{Convergencia del algoritmo} 
 
@@ -137,7 +139,7 @@ Para una cantidad menor a $600$ iteraciones puede observarse que la red neuronal
 
 Decidimos utilizar una cantidad de iteraciónes igual a $900$. El motivo de esta elección reside en lo antes expuesto, una cantidad menor produce que el algoritmo todavía no converja a la solución ideal, mientras que una cantidad mayor, si bien parece aumentar la precisión de la solución, también podría deberse al overfitting de los datos.
 
-\subsection{Eficiencia energética} 
+\section{Eficiencia energética} 
 
 Este problema presenta ciertas diferencias con respecto al anterior. En particular en este caso querremos hacer una regresión lineal sobre los datos. Por lo tanto, elegimos una función de activación lineal en la ultima capa. Además para cada conjunto de atributos se deberán devolver dos resultados diferentes, por lo que la ultima capa tendrá dos neuronas de salida.
 
@@ -194,4 +196,27 @@ Para $2000$ a $4000$ épocas, es correcto asumir que el algoritmo todavía no ha
 
 Por este motivo Consideramos tomar para este caso una cantidad de épocas igual a $7000$.
 
-%TODO: concluciones de cada apartado
+\pagebreak
+
+\section{Como Ejecutar}
+
+Todo el programa fue implementado en python, para ejecutar el codigo simplemente debe ejecutarse:
+
+$$ \textbf{python main.py numero\_ejercicio} $$
+\\
+En la carpeta raiz del trabajo.
+
+Ademas para facilitar el testeo para diferentes parametros, se cuenta con los siguientes flags:
+\begin{itemize}
+\item    -i $<$inputfile$>$ \quad Archivo de entrenamiento a utilizar
+\item    -o $<$outputfile$>$ \t Archivo donde guardar red
+\item    -n $<$net\_file$>$ \quad Red a utilizar
+\item    -t $<$testing\_file$>$ \quad Archivo contra el que testear
+\item    -e $<$Cant\_epocas$>$\quad Cantidad de epocas a utilizar
+\item    -l $<$lerning\_rate$>$\quad Learning rate a utilizar
+\item    -c $<$cantidad\_neuronas$>$\quad Cantidad De Neuronas A utilizar en la capa oculta.
+\item    -g \quad Graficar Resultados
+\item    -s \quad Silent (no muestra resultados intermedios)
+\item    -t \quad Testear en training set
+\item    -w \quad Testear En datos de Entrenamiento (deshabilita testeo en datos de testeo)
+\end{itemize}
